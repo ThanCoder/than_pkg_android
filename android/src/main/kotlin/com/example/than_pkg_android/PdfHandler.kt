@@ -25,27 +25,20 @@ class PdfHandler : PkgHandler() {
             result.error("NO_CONTEXT", "Context is not available", null)
             return
         }
-        when (method) {
-            "saveToThumbnail" -> {
-                saveToThumbnail(ctx, call, result)
-            }
 
-            "getPage" -> {
-                getPage(ctx, call, result)
-            }
-
-            "getPageCount" -> {
-                getPageCount(ctx, call, result)
-            }
-
-            else -> {
-                result.notImplemented()
+        // 🌟 ဒီနေရာကနေ Thread စခွဲလိုက်ရင် အောက်က function အကုန်လုံး Safe ဖြစ်သွားမယ်
+        thread {
+            when (method) {
+                "saveToThumbnail" -> saveToThumbnail(ctx, call, result)
+                "getPage" -> getPage(ctx, call, result)
+                "getPageCount" -> getPageCount(ctx, call, result)
+                else -> result.notImplemented()
             }
         }
     }
 
-
-    fun saveToThumbnail(ctx: Context, call: MethodCall, result: MethodChannel.Result) {
+    // 🔥 အတွင်းထဲက thread { } တွေကို ဖြုတ်လိုက်ပါပြီ
+    private fun saveToThumbnail(ctx: Context, call: MethodCall, result: MethodChannel.Result) {
         val pdfUriStr = call.argument<String>("pdfUri")
         val targetPath = call.argument<String>("targetPath")
         val width = call.argument<Int>("width")
@@ -58,35 +51,32 @@ class PdfHandler : PkgHandler() {
             return
         }
 
-        thread {
-            try {
-                val bitmap = renderPdfToBitmap(ctx, pdfUriStr, pageIndex, width, height)
-                if (bitmap == null) {
-                    result.success(false)
-                    return@thread
-                }
-
-                val file = File(targetPath)
-                // Folder မရှိရင် ဆောက်ပေးမယ်
-                file.parentFile?.mkdirs()
-
-                FileOutputStream(file).use { out ->
-                    val compressFormat =
-                        if (format.lowercase() == "jpg" || format.lowercase() == "jpeg") {
-                            Bitmap.CompressFormat.JPEG
-                        } else {
-                            Bitmap.CompressFormat.PNG
-                        }
-                    bitmap.compress(compressFormat, 100, out)
-                }
-                result.success(true)
-            } catch (e: Exception) {
-                result.error("SAVE_FAILED", e.localizedMessage, null)
+        try {
+            val bitmap = renderPdfToBitmap(ctx, pdfUriStr, pageIndex, width, height)
+            if (bitmap == null) {
+                result.success(false)
+                return
             }
+
+            val file = File(targetPath)
+            file.parentFile?.mkdirs()
+
+            FileOutputStream(file).use { out ->
+                val compressFormat =
+                    if (format.lowercase() == "jpg" || format.lowercase() == "jpeg") {
+                        Bitmap.CompressFormat.JPEG
+                    } else {
+                        Bitmap.CompressFormat.PNG
+                    }
+                bitmap.compress(compressFormat, 100, out)
+            }
+            result.success(true)
+        } catch (e: Exception) {
+            result.error("SAVE_FAILED", e.localizedMessage, null)
         }
     }
 
-    fun getPage(ctx: Context, call: MethodCall, result: MethodChannel.Result) {
+    private fun getPage(ctx: Context, call: MethodCall, result: MethodChannel.Result) {
         val pdfUriStr = call.argument<String>("pdfUri")
         val width = call.argument<Int>("width")
         val height = call.argument<Int>("height")
@@ -98,56 +88,51 @@ class PdfHandler : PkgHandler() {
             return
         }
 
-        thread {
-            try {
-                val bitmap = renderPdfToBitmap(ctx, pdfUriStr, pageIndex, width, height)
-                if (bitmap == null) {
-                    result.success(null)
-                    return@thread
-                }
-
-                val stream = ByteArrayOutputStream()
-                val compressFormat =
-                    if (format.lowercase() == "jpg" || format.lowercase() == "jpeg") {
-                        Bitmap.CompressFormat.JPEG
-                    } else {
-                        Bitmap.CompressFormat.PNG
-                    }
-                bitmap.compress(compressFormat, 100, stream)
-
-                result.success(stream.toByteArray())
-            } catch (e: Exception) {
-                result.error("GET_PAGE_FAILED", e.localizedMessage, null)
+        try {
+            val bitmap = renderPdfToBitmap(ctx, pdfUriStr, pageIndex, width, height)
+            if (bitmap == null) {
+                result.success(null)
+                return
             }
+
+            val stream = ByteArrayOutputStream()
+            val compressFormat =
+                if (format.lowercase() == "jpg" || format.lowercase() == "jpeg") {
+                    Bitmap.CompressFormat.JPEG
+                } else {
+                    Bitmap.CompressFormat.PNG
+                }
+            bitmap.compress(compressFormat, 100, stream)
+
+            result.success(stream.toByteArray())
+        } catch (e: Exception) {
+            result.error("GET_PAGE_FAILED", e.localizedMessage, null)
         }
     }
 
-    fun getPageCount(ctx: Context, call: MethodCall, result: MethodChannel.Result) {
+    private fun getPageCount(ctx: Context, call: MethodCall, result: MethodChannel.Result) {
         val pdfUriStr = call.argument<String>("pdfUri") ?: return result.error(
             "INVALID_ARGUMENTS",
             "pdfUri is required",
             null
         )
-        thread {
-            try {
-                // ပြင်ဆင်ရန် ၂ - openFileDescriptor ကို သုံးပြီး လမ်းကြောင်း ၂ မျိုးလုံးကို ဖွင့်ခြင်း
-                openFileDescriptor(ctx, pdfUriStr).use { fd ->
-                    if (fd != null) {
-                        val renderer = PdfRenderer(fd)
-                        val count = renderer.pageCount
-                        renderer.close()
-                        result.success(count)
-                    } else {
-                        result.success(0)
-                    }
+
+        try {
+            openFileDescriptor(ctx, pdfUriStr).use { fd ->
+                if (fd != null) {
+                    val renderer = PdfRenderer(fd)
+                    val count = renderer.pageCount
+                    renderer.close()
+                    result.success(count)
+                } else {
+                    result.success(0)
                 }
-            } catch (e: Exception) {
-                result.error("COUNT_FAILED", e.localizedMessage, null)
             }
+        } catch (e: Exception) {
+            result.error("COUNT_FAILED", e.localizedMessage, null)
         }
     }
 
-    // ပြင်ဆင်ရန် ၁ - Path အစစ်ရော၊ content:// ရော ဖွင့်ပေးမည့် Helper Function
     private fun openFileDescriptor(ctx: Context, pathOrUri: String): ParcelFileDescriptor? {
         return if (pathOrUri.startsWith("content://") || pathOrUri.startsWith("file://")) {
             ctx.contentResolver.openFileDescriptor(pathOrUri.toUri(), "r")
@@ -157,7 +142,6 @@ class PdfHandler : PkgHandler() {
         }
     }
 
-    // PDF ကို Bitmap အဖြစ် ပြောင်းပေးတဲ့ ဘုံ (Helper) function
     private fun renderPdfToBitmap(
         ctx: Context,
         pdfUriStr: String,
@@ -170,7 +154,6 @@ class PdfHandler : PkgHandler() {
         var page: PdfRenderer.Page? = null
 
         try {
-            // ပြင်ဆင်ရန် ၃ - openFileDescriptor ကို သုံးပြီး တန်းဖွင့်ခြင်း
             fileDescriptor = openFileDescriptor(ctx, pdfUriStr) ?: return null
             renderer = PdfRenderer(fileDescriptor)
 
@@ -182,23 +165,14 @@ class PdfHandler : PkgHandler() {
             val height = targetHeight ?: page.height
 
             val bitmap = createBitmap(width, height)
-            bitmap.eraseColor(Color.WHITE) // Background ကို အဖြူခံထည့်မယ်
+            bitmap.eraseColor(Color.WHITE)
 
             page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
             return bitmap
         } finally {
-            try {
-                page?.close()
-            } catch (e: Exception) {
-            }
-            try {
-                renderer?.close()
-            } catch (e: Exception) {
-            }
-            try {
-                fileDescriptor?.close()
-            } catch (e: Exception) {
-            }
+            try { page?.close() } catch (e: Exception) {}
+            try { renderer?.close() } catch (e: Exception) {}
+            try { fileDescriptor?.close() } catch (e: Exception) {}
         }
     }
 }

@@ -1,10 +1,10 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-class FileHandler {
+class UriHandler {
   final MethodChannel _channel;
   final String _key;
-  const FileHandler(this._channel, {this._key = 'fileHandler'});
+  const UriHandler(this._channel, {this._key = 'fileHandler'});
 
   /// ### Copy Content Uri To File
   Future<bool> copyContentToFile(String contentUri, String outpath) async {

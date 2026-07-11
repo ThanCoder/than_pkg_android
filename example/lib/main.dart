@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:than_pkg_android/than_pkg_android.dart';
+import 'package:than_pkg_android_example/video_list_listener_example.dart';
 
 void main() {
   runApp(
@@ -100,6 +101,20 @@ class _MyAppState extends State<MyApp> {
       body: Center(child: Text('isFullscreen: $isFullscreen')),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => VideoListListenerExample()),
+          // );
+          print('ThanDev: Start');
+          print(
+            'ThanDev: ${await ThanPkgAndroid.getInstance.cameraHandler.toggleTorch()}',
+          );
+          // print(
+          //   'ThanDev: ${await ThanPkgAndroid.getInstance.cameraHandler.takePicture()}',
+          // );
+          // print(
+          //   'wifi: ${await ThanPkgAndroid.getInstance.wifiHandler.getWifiDetails()}',
+          // );
           // isFullscreen = !isFullscreen;
           // setState(() {});
 
@@ -116,7 +131,7 @@ class _MyAppState extends State<MyApp> {
           // debugPrint(
           //   'requestStoragePermission: ${await ThanPkgAndroid.getInstance.storagePermissionHandler.requestStoragePermission()}',
           // );
-          await manageCustomStorage();
+
           // debugPrint(
           //   'isStoragePermissionGranted: ${await ThanPkgAndroid.getInstance.storagePermissionHandler.isStoragePermissionGranted()}',
           // );

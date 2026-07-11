@@ -1,9 +1,9 @@
 import 'package:flutter/services.dart';
 
-class AndroidStorageHandler {
+class AndroidPathHandler {
   final MethodChannel _channel;
   final String _key;
-  const AndroidStorageHandler(this._channel, {this._key = 'storageHandler'});
+  const AndroidPathHandler(this._channel, {this._key = 'storageHandler'});
 
   /// Path  - `/data/user/0/com.example.app/cache`
   Future<String?> getCachePath() async {

@@ -26,21 +26,31 @@ class ThanPkgAndroidPlugin :
     private var latestContext: android.content.Context? = null
     private var latestActivity: Activity? = null
 
+    private lateinit var handlers: Map<String, PkgHandler>
+
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         latestContext = flutterPluginBinding.applicationContext
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "than_pkg_android")
         channel.setMethodCallHandler(this)
+
+        handlers = mapOf<String, PkgHandler>(
+            "fileSelector" to FileSelectorHandler(),
+            "os" to OsHandler(),
+            "wifiHandler" to WifiHandler(),
+            "fileHandler" to AndroidFileHandler(),
+            "storagePermissionHandler" to StoragePermissionHandler(),
+            "permissionHandler" to PermissionHandler(),
+            "pdfHandler" to PdfHandler(),
+            "storageHandler" to StorageHandler(),
+            "safeStorageHandler" to SafeStorageHandler(),
+            "textureHandler" to TextureHandler(flutterPluginBinding.textureRegistry),
+            "videoHandler" to VideoHandler(),
+            "mediaFetchHandler" to MediaFetchHandler(flutterPluginBinding.binaryMessenger),
+            "cameraHandler" to CameraHandler()
+        )
     }
 
-    private val handlers = mapOf<String, PkgHandler>(
-        "fileSelector" to FileSelectorHandler(),
-        "os" to OsHandler(),
-        "fileHandler" to AndroidFileHandler(),
-        "storagePermissionHandler" to StoragePermissionHandler(),
-        "pdfHandler" to PdfHandler(),
-        "storageHandler" to StorageHandler(),
-        "safeStorageHandler" to SafeStorageHandler()
-    )
+
 
     override fun onMethodCall(
         call: MethodCall,
@@ -102,7 +112,6 @@ class ThanPkgAndroidPlugin :
         // FileSelectorHandler ရဲ့ ရလဒ်ဖြစ်မဖြစ် လှမ်းစစ်ပြီး လွှဲပေးလိုက်တာ
         val fileHandler = handlers["fileSelector"] as? FileSelectorHandler
         val isFileHandled =  fileHandler?.onActivityResult(requestCode, resultCode, data) ?: false
-
         if (isFileHandled) return true
 
         // PermissionHandler ဆီ လွှဲပေးခြင်း
@@ -111,7 +120,18 @@ class ThanPkgAndroidPlugin :
         if(storagePermissionHandled) return true;
 
         val safeStorageHandler = handlers["safeStorageHandler"] as? SafeStorageHandler;
-        return safeStorageHandler?.onActivityResult(resultCode,resultCode,data)?:false
+        val safeStorageHandled =  safeStorageHandler?.onActivityResult(requestCode,resultCode,data)?:false
+        if(safeStorageHandled) return true;
+
+        val permissionHandler = handlers["permissionHandler"] as? PermissionHandler;
+        val permissionHandled =  permissionHandler?.onActivityResult(requestCode,resultCode,data)?:false
+        if(permissionHandled) return true;
+
+        val cameraHandler = handlers["cameraHandler"] as? CameraHandler;
+        val cameraHandled =  cameraHandler?.onActivityResult(requestCode,resultCode,data)?:false
+        if(cameraHandled) return true;
+
+        return false
     }
     // Android 6.0 ~ 10 ရလဒ်အတွက် (Dialog က ပြန်လာရင်)
     override fun onRequestPermissionsResult(
@@ -121,6 +141,12 @@ class ThanPkgAndroidPlugin :
     ): Boolean {
         // PermissionHandler ဆီ လွှဲပေးခြင်း
         val storagePermissionHandler = handlers["storagePermissionHandler"] as? StoragePermissionHandler
-        return storagePermissionHandler?.onRequestPermissionsResult(requestCode, permissions, grantResults) ?: false
+        val storagePermissionHandled =  storagePermissionHandler?.onRequestPermissionsResult(requestCode, permissions, grantResults) ?: false
+        if(storagePermissionHandled) return true
+
+        val permissionHandler = handlers["permissionHandler"] as? PermissionHandler;
+        val permissionHandled =  permissionHandler?.onRequestPermissionsResult(requestCode, grantResults)?:false
+        if(permissionHandled) return true;
+        return false
     }
 }
