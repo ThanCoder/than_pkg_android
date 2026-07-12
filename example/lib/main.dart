@@ -4,7 +4,6 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:than_pkg_android/than_pkg_android.dart';
-import 'package:than_pkg_android_example/video_list_listener_example.dart';
 
 void main() {
   runApp(
