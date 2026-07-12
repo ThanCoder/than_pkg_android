@@ -1,5 +1,5 @@
 name: than_pkg_android
-description: "A new Flutter plugin project."
+description: "Flutter Android Plugin.for all utils"
 version: 0.0.1
 homepage: https://github.com/ThanCoder/than_pkg_android.git
 repository: https://github.com/ThanCoder/than_pkg_android.git
@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  plugin_platform_interface: ^2.0.2
+  plugin_platform_interface: ^2.1.8
 
 dev_dependencies:
   flutter_test:
