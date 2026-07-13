@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 class MediaFile {
   final int id;
   final String name;
@@ -24,5 +25,10 @@ class MediaFile {
       path: map['path'] as String,
       duration: Duration(milliseconds: map['duration'] as int),
     );
+  }
+
+  @override
+  String toString() {
+    return 'MediaFile(id: $id, name: $name, size: $size, uri: $uri, path: $path, duration: $duration)';
   }
 }

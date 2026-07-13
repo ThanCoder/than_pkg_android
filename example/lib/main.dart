@@ -1,4 +1,4 @@
-// ignore_for_file: unused_import, avoid_print
+// ignore_for_file: unused_local_variable, unused_import, avoid_print
 
 import 'dart:async';
 import 'dart:typed_data';
@@ -42,14 +42,13 @@ class _MyAppState extends State<MyApp> {
   StreamSubscription<dynamic>? _sub;
 
   void init() async {
-    _sub = ThanPkgAndroid.getInstance.deviceSensorHandler.accelerometerStream.listen(
-      (event) {
-        print('ThanDev: Stream -> $event');
-        data = event.toString();
-        if (!mounted) return;
-        setState(() {});
-      },
-    );
+    _sub = ThanPkgAndroid.getInstance.deviceSensorHandler.accelerometerStream
+        .listen((event) {
+          print('ThanDev: Stream -> $event');
+          data = event.toString();
+          if (!mounted) return;
+          setState(() {});
+        });
   }
 
   String data = '';
@@ -61,13 +60,15 @@ class _MyAppState extends State<MyApp> {
       body: Center(child: Text('Data: $data')),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => VideoListListenerExample()),
-          // );
           print('ThanDev: Start');
-          final app = ThanPkgAndroid.getInstance.deviceSensorHandler;
-          print('ThanDev: ${await app.getAccelerometerValues()}');
+          // check storage permission
+          final per = ThanPkgAndroid.getInstance.permissionHandler;
+          if (!await per.isStoragePermission()) {
+            await per.requestStoragePermission();
+            return;
+          }
+
+          final handler = ThanPkgAndroid.getInstance.cameraHandler;
         },
       ),
     );
