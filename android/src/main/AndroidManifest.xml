@@ -1,16 +1,42 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.example.than_pkg_android">
+    package="com.example.than_pkg_android">
+
+<!--    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />-->
+
+
+    <queries>
+        <!-- Web Links -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="https" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="http" />
+        </intent>
+
+        <!-- Files 🌟 (ဒီနေရာကို ပြင်လိုက်တာပါ Bro) -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <!-- <type> အစား အောက်ကအတိုင်း <data> သုံးပေးရပါတယ် -->
+            <data android:mimeType="*/*" />
+        </intent>
+    </queries>
+
+
     <application>
 
-<!--        <provider-->
-<!--            android:name="androidx.core.content.FileProvider"-->
-<!--            android:authorities="${applicationId}.file_provider"-->
-<!--            android:exported="false"-->
-<!--            android:grantUriPermissions="true">-->
-<!--            <meta-data-->
-<!--                android:name="android.support.FILE_PROVIDER_PATHS"-->
-<!--                android:resource="@xml/file_paths" />-->
-<!--        </provider>-->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.file_provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>

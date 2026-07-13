@@ -1,25 +1,32 @@
 import 'package:flutter/services.dart';
-import 'package:than_pkg_android/core/android_os.dart';
+import 'package:than_pkg_android/core/handlers/device_sensor_handler.dart';
+import 'package:than_pkg_android/core/handlers/os_handler.dart';
 import 'package:than_pkg_android/core/handlers/android_safe_storage.dart';
 import 'package:than_pkg_android/core/handlers/android_path_handler.dart';
 import 'package:than_pkg_android/core/handlers/android_pdf_handler.dart';
 import 'package:than_pkg_android/core/handlers/android_utils.dart';
+import 'package:than_pkg_android/core/handlers/app_setting_handler.dart';
 import 'package:than_pkg_android/core/handlers/brightness_handler.dart';
 import 'package:than_pkg_android/core/handlers/camera_handler.dart';
 import 'package:than_pkg_android/core/handlers/intent_transfer_handler.dart';
-import 'package:than_pkg_android/core/media/media_selector.dart';
+import 'package:than_pkg_android/core/handlers/launch_handler.dart';
+import 'package:than_pkg_android/core/handlers/privacy_handler.dart';
+import 'package:than_pkg_android/core/managers/battery_manager.dart';
+import 'package:than_pkg_android/core/managers/network_manager.dart';
+import 'package:than_pkg_android/core/selectors/media/media_selector.dart';
 import 'package:than_pkg_android/core/handlers/notification_handler.dart';
 import 'package:than_pkg_android/core/handlers/simple_notification_handler.dart';
 import 'package:than_pkg_android/core/handlers/orientation_handler.dart';
 import 'package:than_pkg_android/core/handlers/sound_handler.dart';
 import 'package:than_pkg_android/core/handlers/uri_handler.dart';
-import 'package:than_pkg_android/core/file_selector.dart';
+import 'package:than_pkg_android/core/selectors/file_selector.dart';
 import 'package:than_pkg_android/core/handlers/permission_handler.dart';
 import 'package:than_pkg_android/core/handlers/storage_permission_handler.dart';
 import 'package:than_pkg_android/core/handlers/video_handler.dart';
 import 'package:than_pkg_android/core/handlers/wifi_handler.dart';
+import 'package:than_pkg_android/core/managers/native_download_manager.dart';
 
-export 'core/media/media_file.dart';
+export 'core/selectors/media/media_file.dart';
 
 class ThanPkgAndroid {
   static ThanPkgAndroid? _instance;
@@ -30,7 +37,8 @@ class ThanPkgAndroid {
 
   final _channel = MethodChannel('than_pkg_android');
 
-  late final os = AndroidOs(_channel);
+  late final osHandler = OsHandler(_channel);
+  late final privacyHandler = PrivacyHandler(_channel);
   late final wifiHandler = WifiHandler(_channel);
   late final cameraHandler = CameraHandler(_channel);
   late final fileSelector = FileSelector(_channel);
@@ -45,9 +53,15 @@ class ThanPkgAndroid {
   late final soundHandler = SoundHandler(_channel);
   late final brightnessHandler = BrightnessHandler(_channel);
   late final orientationHandler = OrientationHandler(_channel);
-  late final itentTransferHandler = IntentTransferHandler(_channel);
+  late final intentTransferHandler = IntentTransferHandler(_channel);
   late final notificationHandler = NotificationHandler(_channel);
   late final simpleNotificationHandler = SimpleNotificationHandler(_channel);
+  late final appSettingHandler = AppSettingHandler(_channel);
+  late final deviceSensorHandler = DeviceSensorHandler(_channel);
+  late final nativeDownloadManager = NativeDownloadManager(_channel);
+  late final launchHandler = LaunchHandler(_channel);
+  late final batteryManager = BatteryManager(_channel);
+  late final networkManager = NetworkManager(_channel);
 
   final utils = AndroidUtils();
 }

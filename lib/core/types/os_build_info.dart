@@ -1,48 +1,95 @@
-class OsBuildInfo {}
+class OsBuildInfo {
+  // 🟢 ၁။ အခြေခံ OS Version အချက်အလက်များ
+  final String release;
+  final int sdkInt;
+  final String incremental;
+  final String codename;
 
-/* 
+  // 🟢 ၂။ Device Hardware အချက်အလက်များ
+  final String brand;
+  final String manufacturer;
+  final String model;
+  final String product;
+  final String hardware;
+  final String device;
+  final String display;
+  final String fingerprint;
 
-// 🟢 ၁။ အခြေခံ OS Version အချက်အလက်များ (Android ဗားရှင်းတိုင်းမှာ ရနိုင်သည်)
-        info["RELEASE"] = Build.VERSION.RELEASE
-        info["SDK_INT"] = Build.VERSION.SDK_INT
-        info["INCREMENTAL"] = Build.VERSION.INCREMENTAL
-        info["CODENAME"] = Build.VERSION.CODENAME
+  // 🟢 ၃။ Android 6.0 (M) နှင့် အထက်အတွက်
+  final String baseOs;
+  final String securityPatch;
 
-        // 🟢 ၂။ Device Hardware အချက်အလက်များ (Flutter ဘက်က Logic ခွဲရင် အရမ်းအသုံးဝင်သည်)
-        info["BRAND"] = Build.BRAND                 // ဥပမာ- xiaomi, samsung
-        info["MANUFACTURER"] = Build.MANUFACTURER   // ဥပမာ- Xiaomi
-        info["MODEL"] = Build.MODEL                 // ဥပမာ- Redmi Note 14 5G
-        info["PRODUCT"] = Build.PRODUCT             // Product နာမည်အစစ်
-        info["HARDWARE"] = Build.HARDWARE           // Chipset ကောင် (ဥပမာ- qcom, mt6833)
-        info["DEVICE"] = Build.DEVICE               // Board code နာမည်
-        info["DISPLAY"] = Build.DISPLAY             // Build ID / Display ROM version
-        info["FINGERPRINT"] = Build.FINGERPRINT     // Unique build fingerprint ID
+  // 🟢 ၄။ Android 12 (S) နှင့် အထက်အတွက်
+  final int mediaPerformanceClass;
 
-        // 🟢 ၃။ Android 6.0 (M) နှင့် အထက်အတွက်သာ
-        info["BASE_OS"] = Build.VERSION.BASE_OS
-        info["SECURITY_PATCH"] = Build.VERSION.SECURITY_PATCH
+  // 🟢 ၅။ Android 13 (Tiramisu) နှင့် အထက်အတွက်
+  final String releaseOrCodename;
+  final String releaseOrPreviewDisplay;
 
-        // 🟢 ၄။ Android 12 (S) နှင့် အထက်အတွက်သာ
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            info["MEDIA_PERFORMANCE_CLASS"] = Build.VERSION.MEDIA_PERFORMANCE_CLASS
-        } else {
-            info["MEDIA_PERFORMANCE_CLASS"] = 0
-        }
+  // 🟢 ၆။ Android 14 (U) နှင့် အထက်အတွက်
+  final int sdkIntFull;
 
-        // 🟢 ၅။ Android 13 (Tiramisu) နှင့် အထက်အတွက်သာ
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            info["RELEASE_OR_CODENAME"] = Build.VERSION.RELEASE_OR_CODENAME
-            info["RELEASE_OR_PREVIEW_DISPLAY"] = Build.VERSION.RELEASE_OR_PREVIEW_DISPLAY
-        } else {
-            info["RELEASE_OR_CODENAME"] = Build.VERSION.RELEASE
-            info["RELEASE_OR_PREVIEW_DISPLAY"] = Build.VERSION.RELEASE
-        }
+  // Constructor
+  OsBuildInfo({
+    required this.release,
+    required this.sdkInt,
+    required this.incremental,
+    required this.codename,
+    required this.brand,
+    required this.manufacturer,
+    required this.model,
+    required this.product,
+    required this.hardware,
+    required this.device,
+    required this.display,
+    required this.fingerprint,
+    required this.baseOs,
+    required this.securityPatch,
+    required this.mediaPerformanceClass,
+    required this.releaseOrCodename,
+    required this.releaseOrPreviewDisplay,
+    required this.sdkIntFull,
+  });
 
-        // 🟢 ၆။ Android 14 (U) နှင့် အထက်အတွက်သာ (မင်းထည့်ထားတဲ့ SDK_INT_FULL ကြောင့် App မကွဲအောင် ကာကွယ်ခြင်း)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            info["SDK_INT_FULL"] = Build.VERSION.SDK_INT_FULL
-        } else {
-            info["SDK_INT_FULL"] =
-                Build.VERSION.SDK_INT * 100000 // Fallback value အဖြစ် အကြမ်းဖျင်းတွက်ပေးထားခြင်း
-        }
-*/
+  // 🌟 Kotlin Map ကနေ ခွဲထုတ်ပြီး Object တည်ဆောက်မယ့် Factory Constructor
+  factory OsBuildInfo.fromMap(Map<dynamic, dynamic> map) {
+    return OsBuildInfo(
+      // ၁။ OS Version
+      release: map["RELEASE"]?.toString() ?? "",
+      sdkInt: map["SDK_INT"] as int? ?? 0,
+      incremental: map["INCREMENTAL"]?.toString() ?? "",
+      codename: map["CODENAME"]?.toString() ?? "",
+
+      // ၂။ Hardware
+      brand: map["BRAND"]?.toString() ?? "",
+      manufacturer: map["MANUFACTURER"]?.toString() ?? "",
+      model: map["MODEL"]?.toString() ?? "",
+      product: map["PRODUCT"]?.toString() ?? "",
+      hardware: map["HARDWARE"]?.toString() ?? "",
+      device: map["DEVICE"]?.toString() ?? "",
+      display: map["DISPLAY"]?.toString() ?? "",
+      fingerprint: map["FINGERPRINT"]?.toString() ?? "",
+
+      // ၃။ Android 6.0+
+      baseOs: map["BASE_OS"]?.toString() ?? "",
+      securityPatch: map["SECURITY_PATCH"]?.toString() ?? "",
+
+      // ၄။ Android 12+
+      mediaPerformanceClass: map["MEDIA_PERFORMANCE_CLASS"] as int? ?? 0,
+
+      // ၅။ Android 13+
+      releaseOrCodename: map["RELEASE_OR_CODENAME"]?.toString() ?? "",
+      releaseOrPreviewDisplay:
+          map["RELEASE_OR_PREVIEW_DISPLAY"]?.toString() ?? "",
+
+      // ၆။ Android 14+
+      sdkIntFull: map["SDK_INT_FULL"] as int? ?? 0,
+    );
+  }
+
+  // Debug လုပ်တဲ့အခါ Data တွေကို အလွယ်တကူ Print ထုတ်ကြည့်နိုင်အောင် toString() ပါ ထည့်ပေးထားတယ် Bro
+  @override
+  String toString() {
+    return 'OsBuildInfo(model: $model, brand: $brand, sdkInt: $sdkInt, sdkIntFull: $sdkIntFull, securityPatch: $securityPatch)';
+  }
+}

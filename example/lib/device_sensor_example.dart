@@ -61,10 +61,6 @@ class _MyAppState extends State<MyApp> {
       body: Center(child: Text('Data: $data')),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => VideoListListenerExample()),
-          // );
           print('ThanDev: Start');
           final app = ThanPkgAndroid.getInstance.deviceSensorHandler;
           print('ThanDev: ${await app.getAccelerometerValues()}');

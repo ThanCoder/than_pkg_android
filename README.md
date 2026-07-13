@@ -1,23 +1,44 @@
 # than_pkg_android
 
-## Replace -> `than_pkg` Package
 
+## Usage 
+```dart
+ThanPkgAndroid.getInstance.[whatever you want!]
+```
 
+## Selectors
 
-## Android Setup ⚠️ (Required for Camera Feature)
++ Added `FileSelector`
++ Added `MediaSelector`
 
-To use the camera feature, you **MUST** configure a `FileProvider` in your Android project to avoid crashes on Android 7.0+.
+## Managers
 
-### Step 1: Update `AndroidManifest.xml`
-Add this inside the `<application>` tag of your `android/app/src/main/AndroidManifest.xml`:
++ Added `BatteryManager`
++ Added `NativeDownloadManager`
++ Added `NetworkManager`
 
-```xml
-<provider
-    android:name="androidx.core.content.FileProvider"
-    android:authorities="${applicationId}.file_provider"
-    android:exported="false"
-    android:grantUriPermissions="true">
-    <meta-data
-        android:name="android.support.FILE_PROVIDER_PATHS"
-        android:resource="@xml/file_paths" />
-</provider>
+## Handlers
+
++ Added `AndroidPathHandler`
++ Added `AndroidPdfHandler`
++ Added `AndroidSafeStorage`
++ Added `AndroidUtils`
++ Added `AppSettingHandler`
++ Added `BrightnessHandler`
++ Added `CameraHandler`
++ Added `DeviceSensorHandler`
++ Added `IntentTransferHandler`
++ Added `LaunchHandler`
++ Added `NotificationHandler`
++ Added `OrientationHandler`
++ Added `OsHandler`
++ Added `PermissionHandler`
++ Added `PrivacyHandler`
++ Added `SimpleNotificationHandler`
++ Added `SoundHandler`
++ Added `StoragePermissionHandler`
++ Added `TextureHandler`
++ Added `UriHandler`
++ Added `VideoHandler`
++ Added `WifiHandler`
+

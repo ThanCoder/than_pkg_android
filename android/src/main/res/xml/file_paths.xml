@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<paths xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- cache-path ရဲ့ path ကို absolute blank ဖြစ်အောင် ထားပေးတာ ပိုစိတ်ချရတယ် Bro -->
-    <cache-path name="camera_cache" path="." />
+<paths>
+    <!-- Internal App Directories -->
+    <files-path name="internal_files" path="." />
+    <cache-path name="internal_cache_files" path="." /> <!-- 💡 ကင်မရာရော ကျန်တဲ့ cache တွေပါ ဒီကောင်နဲ့တင် အကုန်မိပါတယ် Bro -->
+
+    <!-- External Directories (SD Card / Shared Storage) -->
+    <external-path name="external_files" path="." />
+    <external-cache-path name="external_cache_files" path="." />
 </paths>

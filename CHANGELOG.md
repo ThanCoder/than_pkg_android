@@ -1,3 +1,19 @@
+# 0.1.0
+
+### Manager
+
++ Added `BatteryManager`
++ Added `NativeDownloadManager`
++ Added `NetworkManager`
+
+### Handlers
+
++ Added `AppSettingHandler`
++ Added `DeviceSensorHandler`
++ Added `LaunchHandler`
++ Added `OsHandler`
++ Added `PrivacyHandler`
+
 ## 0.0.1
 
 - `os = AndroidOs(_channel);`

@@ -1,11 +1,24 @@
 package com.example.than_pkg_android
 
+import android.app.Activity
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Rect
+import android.net.Uri
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.view.PixelCopy
+import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import androidx.core.net.toUri
+import java.io.File
+import java.io.FileOutputStream
+import androidx.core.graphics.createBitmap
 
 class OsHandler : PkgHandler() {
     @RequiresApi(Build.VERSION_CODES.R)
@@ -34,6 +47,40 @@ class OsHandler : PkgHandler() {
                 val brightness = call.argument<Double>("brightness") ?: -1.0
                 setBrightness(brightness, result)
             }
+            // 🌟 ၄။ Screenshot (App UI ကို ဓာတ်ပုံရိုက်ပြီး File Path ပြန်ပေးခြင်း)
+            "takeScreenshot" -> {
+                takeScreenshotNative(activity!!, result)
+            }
+
+            // 🌟 ၅။ System Screen Recorder (ဗီဒီယိုဖမ်းမယ့် Tool) ကို လှမ်းနှိုးခြင်း
+            "startScreenRecord" -> {
+                try {
+                    // Android 11+ မှာ ပါဝင်တဲ့ မွေးရာပါ Screen Record Settings/Tile မျိုးကို Intent နဲ့ နှိုးဖို့ ကြိုးစားတာပါ Bro
+                    val intent = Intent("android.settings.SCREEN_RECORD_SELECT")
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context!!.startActivity(intent)
+                    result.success(true)
+                } catch (e: Exception) {
+                    // အပေါ်က Intent မပွင့်ရင် Standard Quick Settings Panel ကို ဆွဲချပေးလိုက်တာပါ Bro
+                    try {
+                        val statusBarIntent = Intent("android.intent.action.MAIN").apply {
+                            setClassName(
+                                "com.android.systemui",
+                                "com.android.systemui.statusbar.phone.StatusBar"
+                            )
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        }
+                        context!!.startActivity(statusBarIntent)
+                        result.success(true)
+                    } catch (ex: Exception) {
+                        result.error(
+                            "CANNOT_START_RECORDER",
+                            "ဖုန်းရဲ့ Screen Recorder ကို လှမ်းနှိုးလို့ မရပါဘူး Bro: ${e.localizedMessage}",
+                            null
+                        )
+                    }
+                }
+            }
 
             else -> {
                 result.notImplemented()
@@ -41,6 +88,63 @@ class OsHandler : PkgHandler() {
 
         }
     }
+
+    // 🌟 Screenshot ရိုက်ပေးမယ့် Native Helper Function
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun takeScreenshotNative(activity: Activity, result: MethodChannel.Result) {
+        val window: Window = activity.window
+        val view = window.decorView
+
+        // မျက်နှာပြင် အရွယ်အစားအတိုင်း Bitmap အလွတ်တစ်ခု ကြိုဆောက်တယ် Bro
+        val bitmap = createBitmap(view.width, view.height)
+
+        // Android 8.0+ ရဲ့ PixelCopy က UI Freeze မဖြစ်ဘဲ နောက်ကွယ်ကနေ ဓာတ်ပုံ အမြန်လှမ်းကူးပေးပါတယ်
+        val locationOfViewInWindow = IntArray(2)
+        view.getLocationInWindow(locationOfViewInWindow)
+
+        try {
+            PixelCopy.request(
+                window,
+                Rect(
+                    locationOfViewInWindow[0],
+                    locationOfViewInWindow[1],
+                    locationOfViewInWindow[0] + view.width,
+                    locationOfViewInWindow[1] + view.height
+                ),
+                bitmap,
+                { copyResult ->
+                    if (copyResult == PixelCopy.SUCCESS) {
+                        // ဓာတ်ပုံရိုက်လို့ အောင်မြင်ရင် App ရဲ့ Cache Folder ထဲမှာ သွားသိမ်းမယ် Bro
+                        val cacheDir = activity.cacheDir
+                        val screenshotFile =
+                            File(cacheDir, "screenshot_${System.currentTimeMillis()}.png")
+
+                        FileOutputStream(screenshotFile).use { out ->
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+                            out.flush()
+                        }
+
+                        // Flutter ဘက်ကို ရလာတဲ့ ပုံရဲ့ နေရာ (File Path) လှမ်းပြန်ပေးလိုက်တာပါ Bro
+                        activity.runOnUiThread {
+                            result.success(screenshotFile.absolutePath)
+                        }
+                    } else {
+                        activity.runOnUiThread {
+                            result.error(
+                                "SCREENSHOT_FAILED",
+                                "PixelCopy failed to copy screen",
+                                null
+                            )
+                        }
+                    }
+                },
+                Handler(Looper.getMainLooper())
+            )
+        } catch (e: Exception) {
+            result.error("SCREENSHOT_ERROR", e.localizedMessage, null)
+        }
+    }
+
 
     /**
      * ၁။ Native Toast ပြသပေးမည့် Function
