@@ -11,4 +11,26 @@ class AndroidOs {
     if (map == null) return null;
     return Map<String, dynamic>.from(map);
   }
+
+  /// ### Android Native Message
+  Future<void> showToast(String message, {bool isLong = false}) async {
+    await _channel.invokeMethod('$_key/showToast', {
+      'message': message,
+      'isLong': isLong,
+    });
+  }
+
+  /// ### Android Native KeepScreen
+  Future<void> keepScreenOn(bool enabled) async {
+    await _channel.invokeMethod('$_key/keepScreenOn', {'enabled': enabled});
+  }
+
+  /// ### Android Native Brightness
+  /// 
+  /// Range: `0.0`-`1.0`
+  Future<void> setBrightness(double brightness) async {
+    await _channel.invokeMethod('$_key/setBrightness', {
+      'brightness': brightness,
+    });
+  }
 }

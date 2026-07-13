@@ -128,7 +128,21 @@ class CameraHandler : PkgHandler(), PluginRegistry.ActivityResultListener {
                 // ကင်မရာပွင့်လာအောင် Request Code 101 နဲ့ လှမ်းခေါ်လိုက်မယ်
                 activity.startActivityForResult(takePictureIntent, 101)
 
-            } catch (ex: Exception) {
+            }
+            catch (ex: IllegalArgumentException) {
+                // 💡 ဒေဝါး... Dev တွေ Provider ထည့်ဖို့ မေ့သွားရင် ဒီ Error တက်လာမှာပါ
+                val devMessage = "🚨 [ThanPkgAndroid Error]: FileProvider configuration missing! " +
+                        "Please check if you added <provider> in AndroidManifest.xml and created res/xml/file_paths.xml. " +
+                        "Original Error: ${ex.localizedMessage}"
+
+                // Logcat မှာလည်း အနီရောင်နဲ့ ထင်ထင်ရှားရှား ပြပေးမယ်
+                android.util.Log.e("ThanPkgAndroid", devMessage)
+
+                // Flutter UI ဘက်ကိုလည်း ဘာကြောင့်လဲဆိုတာ ရှင်းရှင်းလင်းလင်း လှမ်းပြောလိုက်မယ်
+                result.error("MISSING_FILE_PROVIDER", devMessage, null)
+                pendingResult = null
+            }
+            catch (ex: Exception) {
                 result.error("CAMERA_LAUNCH_FAILED", ex.localizedMessage, null)
                 pendingResult = null
             }

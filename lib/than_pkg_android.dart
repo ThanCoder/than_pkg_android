@@ -1,17 +1,23 @@
 import 'package:flutter/services.dart';
 import 'package:than_pkg_android/core/android_os.dart';
-import 'package:than_pkg_android/core/android_safe_storage.dart';
-import 'package:than_pkg_android/core/android_path_handler.dart';
-import 'package:than_pkg_android/core/android_pdf_handler.dart';
-import 'package:than_pkg_android/core/android_utils.dart';
-import 'package:than_pkg_android/core/camera_handler.dart';
+import 'package:than_pkg_android/core/handlers/android_safe_storage.dart';
+import 'package:than_pkg_android/core/handlers/android_path_handler.dart';
+import 'package:than_pkg_android/core/handlers/android_pdf_handler.dart';
+import 'package:than_pkg_android/core/handlers/android_utils.dart';
+import 'package:than_pkg_android/core/handlers/brightness_handler.dart';
+import 'package:than_pkg_android/core/handlers/camera_handler.dart';
+import 'package:than_pkg_android/core/handlers/intent_transfer_handler.dart';
 import 'package:than_pkg_android/core/media/media_selector.dart';
-import 'package:than_pkg_android/core/uri_handler.dart';
+import 'package:than_pkg_android/core/handlers/notification_handler.dart';
+import 'package:than_pkg_android/core/handlers/simple_notification_handler.dart';
+import 'package:than_pkg_android/core/handlers/orientation_handler.dart';
+import 'package:than_pkg_android/core/handlers/sound_handler.dart';
+import 'package:than_pkg_android/core/handlers/uri_handler.dart';
 import 'package:than_pkg_android/core/file_selector.dart';
-import 'package:than_pkg_android/core/permission_handler.dart';
-import 'package:than_pkg_android/core/storage_permission_handler.dart';
-import 'package:than_pkg_android/core/video_handler.dart';
-import 'package:than_pkg_android/core/wifi_handler.dart';
+import 'package:than_pkg_android/core/handlers/permission_handler.dart';
+import 'package:than_pkg_android/core/handlers/storage_permission_handler.dart';
+import 'package:than_pkg_android/core/handlers/video_handler.dart';
+import 'package:than_pkg_android/core/handlers/wifi_handler.dart';
 
 export 'core/media/media_file.dart';
 
@@ -36,5 +42,12 @@ class ThanPkgAndroid {
   late final safeStorage = AndroidSafeStorage(_channel);
   late final videoHandler = VideoHandler(_channel);
   late final mediaSelector = MediaSelector(_channel);
+  late final soundHandler = SoundHandler(_channel);
+  late final brightnessHandler = BrightnessHandler(_channel);
+  late final orientationHandler = OrientationHandler(_channel);
+  late final itentTransferHandler = IntentTransferHandler(_channel);
+  late final notificationHandler = NotificationHandler(_channel);
+  late final simpleNotificationHandler = SimpleNotificationHandler(_channel);
+
   final utils = AndroidUtils();
 }
