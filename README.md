@@ -20,6 +20,7 @@ ThanPkgAndroid.getInstance.[whatever you want!]
 ## Handlers
 
 + [x] ➕ Updated [`TextureHandler`](#texturehandler)
+[Example](https://github.com/ThanCoder/than_pkg_android/blob/main/example/lib/texture_example.dart)
 
 ------
 
@@ -68,7 +69,7 @@ handler.saveThumbnail(path, savePath)
 ```
 
 ### TextureHandler
-
+[Example](https://github.com/ThanCoder/than_pkg_android/blob/main/example/lib/texture_example.dart)
 ```dart
 final handler = ThanPkgAndroid.getInstance.textureHandler;
           
