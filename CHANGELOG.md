@@ -28,4 +28,4 @@
 - `safeStorage = AndroidSafeStorage(_channel);`
 - `videoHandler = VideoHandler(_channel);`
 - `mediaSelector = MediaSelector(_channel);`
-- `final utils = AndroidUtils();`
+- `final flutterUtils = FlutterUtils();`

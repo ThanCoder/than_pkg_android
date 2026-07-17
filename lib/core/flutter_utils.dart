@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 
-class AndroidUtils {
+class FlutterUtils {
   Future<void> toggleFullscreen(bool isFullscreen) async {
     if (isFullscreen) {
       // Fullscreen အမှန်ဖြစ်သွားရင် - Status Bar နဲ့ Bottom Navigation Bar ကို ဝှက်လိုက်မယ်

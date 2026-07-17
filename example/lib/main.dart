@@ -68,7 +68,11 @@ class _MyAppState extends State<MyApp> {
             return;
           }
 
-          final handler = ThanPkgAndroid.getInstance.cameraHandler;
+          final handler = ThanPkgAndroid.getInstance.wifiHandler;
+          
+          
+        
+
         },
       ),
     );

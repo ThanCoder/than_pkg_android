@@ -62,7 +62,7 @@ class OrientationHandler {
 
   /// ### Android Orientation
   ///
-  Future<OrientationMode> getOrientation(OrientationMode mode) async {
+  Future<OrientationMode> getOrientation() async {
     final res = await _channel.invokeMethod<int>('$_key/getOrientation');
     return OrientationMode.fromValue(res ?? -1);
   }

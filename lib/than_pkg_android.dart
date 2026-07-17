@@ -4,13 +4,14 @@ import 'package:than_pkg_android/core/handlers/os_handler.dart';
 import 'package:than_pkg_android/core/handlers/android_safe_storage.dart';
 import 'package:than_pkg_android/core/handlers/android_path_handler.dart';
 import 'package:than_pkg_android/core/handlers/android_pdf_handler.dart';
-import 'package:than_pkg_android/core/handlers/android_utils.dart';
+import 'package:than_pkg_android/core/flutter_utils.dart';
 import 'package:than_pkg_android/core/handlers/app_setting_handler.dart';
 import 'package:than_pkg_android/core/handlers/brightness_handler.dart';
 import 'package:than_pkg_android/core/handlers/camera_handler.dart';
 import 'package:than_pkg_android/core/handlers/intent_transfer_handler.dart';
 import 'package:than_pkg_android/core/handlers/launch_handler.dart';
 import 'package:than_pkg_android/core/handlers/privacy_handler.dart';
+import 'package:than_pkg_android/core/handlers/texture_handler.dart';
 import 'package:than_pkg_android/core/managers/battery_manager.dart';
 import 'package:than_pkg_android/core/managers/network_manager.dart';
 import 'package:than_pkg_android/core/selectors/media/media_selector.dart';
@@ -62,6 +63,7 @@ class ThanPkgAndroid {
   late final launchHandler = LaunchHandler(_channel);
   late final batteryManager = BatteryManager(_channel);
   late final networkManager = NetworkManager(_channel);
+  late final textureHandler = TextureHandler(_channel);
 
-  final utils = AndroidUtils();
+  final flutterUtils = FlutterUtils();
 }

@@ -20,7 +20,7 @@ class SoundHandler {
   ///
   /// if error -> null
   ///
-  Future<double?> getVolume(double volume) async {
+  Future<double?> getVolume() async {
     return await _channel.invokeMethod<double>('$_key/getVolume');
   }
 }
