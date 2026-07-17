@@ -11,7 +11,7 @@ import 'package:than_pkg_android/core/handlers/camera_handler.dart';
 import 'package:than_pkg_android/core/handlers/intent_transfer_handler.dart';
 import 'package:than_pkg_android/core/handlers/launch_handler.dart';
 import 'package:than_pkg_android/core/handlers/privacy_handler.dart';
-import 'package:than_pkg_android/core/handlers/texture_handler.dart';
+import 'package:than_pkg_android/core/texture/texture_handler.dart';
 import 'package:than_pkg_android/core/managers/battery_manager.dart';
 import 'package:than_pkg_android/core/managers/network_manager.dart';
 import 'package:than_pkg_android/core/selectors/media/media_selector.dart';

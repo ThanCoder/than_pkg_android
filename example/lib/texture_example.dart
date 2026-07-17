@@ -8,60 +8,28 @@ import 'package:than_pkg_android/core/managers/battery_manager.dart';
 import 'package:than_pkg_android/core/texture/native_texture.dart';
 import 'package:than_pkg_android/than_pkg_android.dart';
 
-void main() {
-  runApp(
-    MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const MyApp(),
-      // theme: ThemeData.dark(),
-    ),
-  );
-}
-
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class TextureExample extends StatefulWidget {
+  const TextureExample({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<TextureExample> createState() => _TextureExampleState();
 }
 
-class _MyAppState extends State<MyApp> {
-  bool isFullscreen = false;
-
-  @override
-  void initState() {
-    // init();
-    super.initState();
-  }
-
+class _TextureExampleState extends State<TextureExample> {
   @override
   void dispose() {
-    _sub?.cancel();
     if (textureId != null) {
       ThanPkgAndroid.getInstance.textureHandler.releaseTexture(textureId!);
     }
     super.dispose();
   }
 
-  StreamSubscription<dynamic>? _sub;
-
-  void init() async {
-    _sub = ThanPkgAndroid.getInstance.deviceSensorHandler.accelerometerStream
-        .listen((event) {
-          print('ThanDev: Stream -> $event');
-          data = event.toString();
-          if (!mounted) return;
-          setState(() {});
-        });
-  }
-
-  String data = '';
   int? textureId;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: isFullscreen ? null : AppBar(title: Text("Than Pkg")),
+      appBar: AppBar(title: Text("Texture Example")),
       body: Center(
         child: textureId == null
             ? Text('texture id is null')
@@ -70,12 +38,6 @@ class _MyAppState extends State<MyApp> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           print('ThanDev: Start');
-          // check storage permission
-          final per = ThanPkgAndroid.getInstance.permissionHandler;
-          if (!await per.isStoragePermission()) {
-            await per.requestStoragePermission();
-            return;
-          }
 
           final handler = ThanPkgAndroid.getInstance.textureHandler;
           // if (textureId != null) {
@@ -85,7 +47,9 @@ class _MyAppState extends State<MyApp> {
           //   return;
           // }
           textureId ??= await handler.createTexture();
+          
 
+          // test color texture
           testTextureColor(textureId!);
           setState(() {});
         },

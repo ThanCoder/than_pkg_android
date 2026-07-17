@@ -1,26 +1,24 @@
 package com.example.than_pkg_android
 
-import android.graphics.SurfaceTexture
 import android.view.Surface
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.view.TextureRegistry
-import kotlin.also
 
 class TextureHandler(private val textureRegistry: TextureRegistry) : PkgHandler() {
 
-    // Texture Entry တွေကို မှတ်ထားမယ့် Map
-    private val textures = mutableMapOf<Long, TextureRegistry.SurfaceTextureEntry>()
-    // FFI/C++ ဘက်က သုံးနိုင်အောင် Surface တွေကို သိမ်းထားမယ့် Map
-    private val surfaces = mutableMapOf<Long, Surface>()
+    // Map ထဲမှာ SurfaceProducer ရော Surface ကိုပါ သိမ်းထားမယ် (GC က လာမစားအောင်)
+    private val producers = HashMap<Long, TextureRegistry.SurfaceProducer>()
+    private val surfaces = HashMap<Long, Surface>()
 
     override fun handle(method: String, call: MethodCall, result: MethodChannel.Result) {
         when (method) {
             "createTexture" -> {
                 try {
-                    val entry = textureRegistry.createSurfaceTexture()
-                    val textureId = entry.id()
-                    textures[textureId] = entry
+                    // 💡 ခေတ်မီ SurfaceProducer API အသစ်ကို သုံးမယ်
+                    val producer = textureRegistry.createSurfaceProducer()
+                    val textureId = producer.id()
+                    producers[textureId] = producer
 
                     result.success(textureId)
                 } catch (e: Exception) {
@@ -29,21 +27,32 @@ class TextureHandler(private val textureRegistry: TextureRegistry) : PkgHandler(
             }
 
             "getSurfacePointer" -> {
-                // FFmpeg / C++ ဘက်ကနေ Android Native Surface ပေါ် တိုက်ရိုက် ကုဒ်ဆွဲနိုင်ဖို့
-                // ANativeWindow pointer အဖြစ် သုံးမယ့် Surface object ကို လှမ်းယူတာ
                 val textureId = call.argument<Number>("textureId")?.toLong()
-                val entry = textures[textureId]
+                val width = call.argument<Number>("width")?.toInt() ?: 200
+                val height = call.argument<Number>("height")?.toInt() ?: 200
 
-                if (entry != null) {
-                    // ရှိပြီးသား Surface ရှိရင် ပြန်ပေးမယ်၊ မရှိရင် အသစ်ဆောက်မယ်
-                    val surface = surfaces[textureId] ?: Surface(entry.surfaceTexture()).also {
-                        surfaces[textureId!!] = it
+                val producer = producers[textureId]
+
+                if (producer != null) {
+                    // 1. Buffer Size ကို Flutter Texture System ထဲ တိုက်ရိုက် ကြိုသတ်မှတ်တယ်
+                    producer.setSize(width, height)
+
+                    // 2. Surface ယူမယ်
+                    val surface = producer.surface
+                    surfaces[textureId!!] = surface
+
+                    // 3. JNI ဘက်က ANativeWindow_fromSurface ကို သုံးပြီး တရားဝင် Pointer Address ထုတ်မယ်
+                    try {
+                        val nativePointer = getNativeWindowFromSurface(surface)
+
+                        if (nativePointer == 0L) {
+                            result.error("POINTER_NULL", "Cannot get ANativeWindow pointer from Surface", null)
+                        } else {
+                            result.success(nativePointer)
+                        }
+                    } catch (e: Exception) {
+                        result.error("POINTER_ERROR", e.message, null)
                     }
-
-                    // မှတ်ချက်- တကယ်တမ်း FFI နဲ့ သုံးရင် Java Surface Object ကို JNI ကနေတစ်ဆင့်
-                    // C++ ဘက်က ANativeWindow_fromSurface(env, surface) ဆိုပြီး ပြောင်းသုံးရပါတယ်
-                    // ဒီမှာတော့ Java Object ကို အဆင်သင့်ဖြစ်အောင် သိမ်းပေးထားတာပါ
-                    result.success(true)
                 } else {
                     result.error("NOT_FOUND", "Texture ID not found", null)
                 }
@@ -58,19 +67,32 @@ class TextureHandler(private val textureRegistry: TextureRegistry) : PkgHandler(
                     result.error("INVALID_ARGUMENT", "TextureId is null", null)
                 }
             }
+
             else -> result.notImplemented()
         }
     }
 
     private fun releaseTexture(textureId: Long) {
+        // Surface ကို release လုပ်ပြီး map ထဲက ဖျက်မယ်
         surfaces.remove(textureId)?.release()
-        textures.remove(textureId)?.release()
+
+        // SurfaceProducer ကို ခေါ်ပြီး release လုပ်မယ် (textures map အဟောင်းနေရာမှာ အစားထိုးတာပါ)
+        producers.remove(textureId)?.release()
     }
 
     override fun onDetachedFromActivity() {
         super.onDetachedFromActivity()
         // Plugin ပိတ်သွားရင် memory leak မဖြစ်အောင် အကုန်ရှင်းမယ်
-        val keys = textures.keys.toList()
+        val keys = producers.keys.toList()
         keys.forEach { releaseTexture(it) }
     }
+
+    companion object {
+        init {
+            System.loadLibrary("than_pkg_android") // 👈 မင်းရဲ့ C++ CMake က ထွက်လာတဲ့ .so နာမည် (ဥပမာ libthan_pkg_android.so ဆိုရင် "than_pkg_android" လို့ ထည့်ပါ)
+        }
+    }
+
+    // 💡 external key word ထည့်ပေးရပါမယ်
+    private external fun getNativeWindowFromSurface(surface: Surface): Long
 }

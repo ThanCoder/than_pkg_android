@@ -1,4 +1,9 @@
-# 0.1.0
+# 0.2.1
+
++ Fixed `TextureHandler`
++ Added `Texture Test Func` -> Go `README.md` Example
+
+## 0.1.0
 
 ### Manager
 

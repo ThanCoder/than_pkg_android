@@ -19,6 +19,10 @@ ThanPkgAndroid.getInstance.[whatever you want!]
 
 ## Handlers
 
++ [x] ➕ Updated [`TextureHandler`](#texturehandler)
+
+------
+
 + [x] ➕ Added [`PathHandler`](#path-handler)
 + [x] ➕ Added [`PdfHandler`](#pdf-handler)
 + [x] ➕ Added [`SafeStorage`](#safestorage-handler)
@@ -37,7 +41,6 @@ ThanPkgAndroid.getInstance.[whatever you want!]
 + [x] ➕ Added [`NotificationHandler`](#notificationhandler)
 + [x] ➕ Added [`SoundHandler`](#soundhandler)
 + [x] ➕ Added [`StoragePermissionHandler`](#storagepermissionhandler)
-+ [x] ➕ Added [`TextureHandler`](#texturehandler)
 + [x] ➕ Added [`UriHandler`](#uri-handler-example)
 + [x] ➕ Added [`VideoHandler`](#videohandler)
 + [x] ➕ Added [`WifiHandler`](#wifihandler)
@@ -65,12 +68,31 @@ handler.saveThumbnail(path, savePath)
 ```
 
 ### TextureHandler
+
 ```dart
 final handler = ThanPkgAndroid.getInstance.textureHandler;
           
 handler.createTexture()
-handler.getSurfacePointer(textureId)
+handler.getSurfacePointer(textureId, width: width, height: height)
 handler.releaseTexture(textureId)
+
+
+
+// ⚠️ DEV WARNING: This invokes raw C++ FFI bindings under the hood. 
+// Any mismatch between buffer dimensions and surface constraints will trigger 
+// a fatal native segmentation fault (SIGSEGV) or GPU driver crash. 
+// IF YOU DO NOT UNDERSTAND THE UNDERLYING MEMORY LIFECYCLE, DO NOT DO IT.
+NativeTextureManager.instance.androidUpdateTexture(
+      surfacePointer,
+      videoBuffer,
+      width,
+      height,
+    );
+
+
+// test color texture
+testTextureColor(textureId!);
+
 ```
 
 ### StoragePermissionHandler

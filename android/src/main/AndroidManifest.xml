@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.than_pkg_android">
     <!--    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />-->
-    <!-- <queries>
+    <queries>
         <!-- Web Links -->
         <intent>
             <action android:name="android.intent.action.VIEW" />
@@ -28,5 +28,5 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-    </application> -->
+    </application>
 </manifest>

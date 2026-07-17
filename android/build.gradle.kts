@@ -44,9 +44,24 @@ android {
         }
     }
 
+    externalNativeBuild {
+        cmake {
+            path = file("CMakeLists.txt") // CMakeLists.txt ဖိုင်လမ်းကြောင်း
+            version = "3.28.3"
+        }
+    }
+
     defaultConfig {
         minSdk = 24
+
+        externalNativeBuild {
+            cmake {
+                cppFlags("")
+            }
+        }
     }
+
+
 
     testOptions {
         unitTests {
