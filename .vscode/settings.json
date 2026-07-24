@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "/home/thancoder/projects/flutter_plugins/than_pkg_android/android"
+    "cmake.sourceDirectory": "/home/thancoder/projects/flutter_plugins/than_pkg_android/android",
+    "cmake.ignoreCMakeListsMissing": true
 }
