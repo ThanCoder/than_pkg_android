@@ -13,7 +13,7 @@ void main() {
     MaterialApp(
       debugShowCheckedModeBanner: false,
       home: const MyApp(),
-      // theme: ThemeData.dark(),
+      theme: ThemeData.dark(),
     ),
   );
 }
@@ -28,33 +28,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool isFullscreen = false;
 
-  @override
-  void initState() {
-    // init();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _sub?.cancel();
-    if (textureId != null) {
-      ThanPkgAndroid.getInstance.textureHandler.releaseTexture(textureId!);
-    }
-    super.dispose();
-  }
-
-  StreamSubscription<dynamic>? _sub;
-
-  void init() async {
-    _sub = ThanPkgAndroid.getInstance.deviceSensorHandler.accelerometerStream
-        .listen((event) {
-          print('ThanDev: Stream -> $event');
-          data = event.toString();
-          if (!mounted) return;
-          setState(() {});
-        });
-  }
-
   String data = '';
   int? textureId;
 
@@ -67,29 +40,35 @@ class _MyAppState extends State<MyApp> {
             ? Text('texture id is null')
             : Texture(textureId: textureId!),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          print('ThanDev: Start');
-          // check storage permission
-          final per = ThanPkgAndroid.getInstance.permissionHandler;
-          if (!await per.isStoragePermission()) {
-            await per.requestStoragePermission();
-            return;
-          }
+      floatingActionButton: actionBtn(),
+    );
+  }
 
-          final handler = ThanPkgAndroid.getInstance.textureHandler;
-          // if (textureId != null) {
-          //   await handler.releaseTexture(textureId!);
-          //   textureId = null;
-          //   setState(() {});
-          //   return;
-          // }
-          textureId ??= await handler.createTexture();
+  FloatingActionButton actionBtn() {
+    return FloatingActionButton(
+      onPressed: () async {
+        print('ThanDev: Start');
+        // check storage permission
+        // if (!await per.isStoragePermission()) {
+        //   await per.requestStoragePermission();
+        //   return;
+        // }
+        final per = ThanPkgAndroid.getInstance.permissionHandler;
+        if (!await per.isCameraPermission()) {
+          await per.requestCameraPermission();
+        }
+        final pkg = ThanPkgAndroid.getInstance.cameraHandler;
 
-          testTextureColor(textureId!);
-          setState(() {});
-        },
-      ),
+        final hasFlashlight = await pkg.hasFlashlight();
+        print('Dev: hasFlashlight: $hasFlashlight');
+        if (hasFlashlight) {
+          await pkg.toggleTorch(enable: false);
+        } else {
+          await pkg.toggleTorch(enable: true);
+        }
+
+        // print('Dev: $uri');
+      },
     );
   }
 }

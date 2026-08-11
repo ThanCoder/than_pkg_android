@@ -6,53 +6,73 @@
 ThanPkgAndroid.getInstance.[whatever you want!]
 ```
 
+## InfoHandler
+
+* [x] ➕ Added [`InfoHandler`](#infohandler-example) New
+
 ## Selectors
 
-- [x] ➕ Added [`FileSelector`](#file-selector-example)
-- [x] ➕ Added [`MediaSelector`](#mediaselector)
+* [x] ➕ Added [`FileSelector`](#file-selector-example)
+* [x] ➕ Added [`MediaSelector`](#mediaselector)
 
 ## Managers
 
-- [x] ➕ Added [`BatteryManager`](#battery-manger-example)
-- [x] ➕ Added [`NativeDownloadManager`](#nativedownload-manager)
-- [x] ➕ Added [`NetworkManager`](#networkmanager)
+* [x] ➕ Added [`BatteryManager`](#battery-manger-example)
+* [x] ➕ Added [`NativeDownloadManager`](#nativedownload-manager)
+* [x] ➕ Added [`NetworkManager`](#networkmanager)
 
 ## Handlers
 
-+ [x] ➕ Updated [`TextureHandler`](#texturehandler)
+* [x] ➕ Updated [`TextureHandler`](#texturehandler)
 [Example](https://github.com/ThanCoder/than_pkg_android/blob/main/example/lib/texture_example.dart)
 
 ------
 
-+ [x] ➕ Added [`PathHandler`](#path-handler)
-+ [x] ➕ Added [`PdfHandler`](#pdf-handler)
-+ [x] ➕ Added [`SafeStorage`](#safestorage-handler)
-+ [x] ➕ Added [`FlutterUtils`](#flutter-utils)
-+ [x] ➕ Added [`AppSettingHandler`](#appsetting-handler)
-+ [x] ➕ Added [`BrightnessHandler`](#brightness-handler)
-+ [x] ➕ Added [`CameraHandler`](#camera-handler)
-+ [x] ➕ Added [`DeviceSensorHandler`](#devicesensor-handler)
-+ [x] ➕ Added [`IntentTransferHandler`](#intenttransfer-handler)
-+ [x] ➕ Added [`LaunchHandler`](#launch-handler)
-+ [x] ➕ Added [`OrientationHandler`](#orientationhandler)
-+ [x] ➕ Added [`OsHandler`](#oshandler)
-+ [x] ➕ Added [`PermissionHandler`](#permissionhandler)
-+ [x] ➕ Added [`PrivacyHandler`](#privacyhandler)
-+ [x] ➕ Added [`SimpleNotificationHandler`](#simplenotificationhandler)
-+ [x] ➕ Added [`NotificationHandler`](#notificationhandler)
-+ [x] ➕ Added [`SoundHandler`](#soundhandler)
-+ [x] ➕ Added [`StoragePermissionHandler`](#storagepermissionhandler)
-+ [x] ➕ Added [`UriHandler`](#uri-handler-example)
-+ [x] ➕ Added [`VideoHandler`](#videohandler)
-+ [x] ➕ Added [`WifiHandler`](#wifihandler)
+* [x] ➕ Added [`PathHandler`](#path-handler)
+* [x] ➕ Added [`PdfHandler`](#pdf-handler)
+* [x] ➕ Added [`SafeStorage`](#safestorage-handler)
+* [x] ➕ Added [`FlutterUtils`](#flutter-utils)
+* [x] ➕ Added [`AppSettingHandler`](#appsetting-handler)
+* [x] ➕ Added [`BrightnessHandler`](#brightness-handler)
+* [x] ➕ Added [`CameraHandler`](#camera-handler)
+* [x] ➕ Added [`DeviceSensorHandler`](#devicesensor-handler)
+* [x] ➕ Added [`IntentTransferHandler`](#intenttransfer-handler)
+* [x] ➕ Added [`LaunchHandler`](#launch-handler)
+* [x] ➕ Added [`OrientationHandler`](#orientationhandler)
+* [x] ➕ Added [`OsHandler`](#oshandler)
+* [x] ➕ Added [`PermissionHandler`](#permissionhandler)
+* [x] ➕ Added [`PrivacyHandler`](#privacyhandler)
+* [x] ➕ Added [`SimpleNotificationHandler`](#simplenotificationhandler)
+* [x] ➕ Added [`NotificationHandler`](#notificationhandler)
+* [x] ➕ Added [`SoundHandler`](#soundhandler)
+* [x] ➕ Added [`StoragePermissionHandler`](#storagepermissionhandler)
+* [x] ➕ Added [`UriHandler`](#uri-handler-example)
+* [x] ➕ Added [`VideoHandler`](#videohandler)
+* [x] ➕ Added [`WifiHandler`](#wifihandler)
 
 ### AndroidManifest.xml
 
-+ [x]  ➕ Added [`All Permission`](#all-permission)
-+ [x]  ➕ Added [`Extra XML Props`](#extra-xml-props)
+* [x]  ➕ Added [`All Permission`](#all-permission)
+* [x]  ➕ Added [`Extra XML Props`](#extra-xml-props)
 
+### InfoHandler Example
+
+```dart
+final pkg = ThanPkgAndroid.getInstance.infoHandler;
+
+await pkg.getAndroidInfo();
+await pkg.getAppInfo();
+await pkg.getBatteryInfo();
+await pkg.getDeviceInfo();
+await pkg.getDisplayInfo();
+await pkg.getFeatureInfo();
+await pkg.getLocaleInfo();
+await pkg.getMemoryInfo();
+await pkg.getStorageInfo();
+```
 
 ### WifiHandler
+
 ```dart
 final handler = ThanPkgAndroid.getInstance.wifiHandler;
           
@@ -60,6 +80,7 @@ handler.getWifiDetails()
 ```
 
 ### VideoHandler
+
 ```dart
 final handler = ThanPkgAndroid.getInstance.videoHandler;
           
@@ -69,15 +90,15 @@ handler.saveThumbnail(path, savePath)
 ```
 
 ### TextureHandler
+
 [Example](https://github.com/ThanCoder/than_pkg_android/blob/main/example/lib/texture_example.dart)
+
 ```dart
 final handler = ThanPkgAndroid.getInstance.textureHandler;
           
 handler.createTexture()
 handler.getSurfacePointer(textureId, width: width, height: height)
 handler.releaseTexture(textureId)
-
-
 
 // ⚠️ DEV WARNING: This invokes raw C++ FFI bindings under the hood. 
 // Any mismatch between buffer dimensions and surface constraints will trigger 
@@ -90,13 +111,13 @@ NativeTextureManager.instance.androidUpdateTexture(
       height,
     );
 
-
 // test color texture
 testTextureColor(textureId!);
 
 ```
 
 ### StoragePermissionHandler
+
 ```dart
 final handler = ThanPkgAndroid.getInstance.storagePermissionHandler;
           
@@ -105,17 +126,24 @@ handler.requestStoragePermission()
 ```
 
 ### SoundHandler
+
 ```dart
 final handler = ThanPkgAndroid.getInstance.soundHandler;
 
 handler.getVolume()
 handler.setVolume(volume)
 ```
+
  
+
 ### NotificationHandler
+
 ```xml
 <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 ```
+
+
+
 ```dart
 /// Check Runtime Permission
  if (!await ThanPkgAndroid.getInstance.permissionHandler
@@ -132,11 +160,17 @@ handler.finish(id, title: title, content: content)
 handler.cancel(id)
 handler.getChannelId()
 ```
+
  
+
 ### SimpleNotificationHandler
+
 ```xml
 <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 ```
+
+
+
 ```dart
 /// Check Runtime Permission
  if (!await ThanPkgAndroid.getInstance.permissionHandler
@@ -155,6 +189,7 @@ handler.getChannelId()
 ```
 
 ### PrivacyHandler
+
 ```dart
 final handler = ThanPkgAndroid.getInstance.privacyHandler;
           
@@ -163,10 +198,11 @@ handler.enableSecure()
 ```
 
 ### PermissionHandler
+
 ```dart
 final handler = ThanPkgAndroid.getInstance.permissionHandler;
           
-//**************Check**************/
+// **************Check************** /
 handler.isAudioRecordPermission()
 handler.isBatteryOptimizationIgnored()
 handler.isBluetoothPermission()
@@ -178,7 +214,7 @@ handler.isNotificationPermission()
 handler.isPackageInstallPermission()
 handler.isPhonePermission()
 handler.isStoragePermission()
-//**************Request**************/
+// **************Request************** /
 handler.requestAudioRecordPermission()
 handler.requestBatteryOptimizationPermission()
 handler.requestBluetoothPermission()
@@ -193,6 +229,7 @@ handler.requestStoragePermission()
 ```
 
 ### OsHandler
+
 ```dart
 final handler = ThanPkgAndroid.getInstance.osHandler;
 
@@ -205,6 +242,7 @@ handler.takeScreenshot()
 ```
 
 ### OrientationHandler
+
 ```dart
 final handler = ThanPkgAndroid.getInstance.orientationHandler;
 
@@ -213,6 +251,7 @@ handler.setOrientation(mode)
 ```
 
 ### NetworkManager
+
 ```dart
 final handler = ThanPkgAndroid.getInstance.networkManager;
 
@@ -221,6 +260,7 @@ handler.networkStatusStream
 ```
 
 ### NativeDownload Manager
+
 ```dart
 final handler = ThanPkgAndroid.getInstance.nativeDownloadManager;
 
@@ -231,6 +271,7 @@ handler.cancel(downloadId)
 ```
 
 ### MediaSelector
+
 ```dart
 final handler = ThanPkgAndroid.getInstance.mediaSelector;
 
@@ -239,7 +280,9 @@ handler.fetchImages()
 handler.fetchVideos()
 handler.onMediaChanged
 ```
+
 ### Launch Handler
+
 ```dart
 final handler = ThanPkgAndroid.getInstance.launchHandler;
 
@@ -248,7 +291,9 @@ handler.launchUrl(url)
 handler.openCustomTab(url)
 handler.openExternalBrowser(url)
 ```
+
 ### IntentTransfer Handler
+
 ```xml
  <activity android:name=".MainActivity" ...>
 
@@ -261,20 +306,27 @@ handler.openExternalBrowser(url)
 
 </activity>
 ```
+
+
+
 ```dart
 final handler = ThanPkgAndroid.getInstance.intentTransferHandler;
 
 handler.getInitialData()
 handler.receiveDataStream
 ```
+
 ### DeviceSensor Handler
+
 ```dart
 final handler = ThanPkgAndroid.getInstance.deviceSensorHandler;
 
 handler.getAccelerometerValues()
 handler.accelerometerStream;
 ```
+
 ### Camera Handler
+
 ```dart
 
 final handler = ThanPkgAndroid.getInstance.cameraHandler;
@@ -285,13 +337,16 @@ handler.toggleTorch()
 ```
 
 ### Brightness Handler
+
 ```dart
 final handler = ThanPkgAndroid.getInstance.brightnessHandler;
 
 handler.getScreenBrightness(volume)
 handler.setScreenBrightness(brightness)
 ```
+
 ### AppSetting Handler
+
 ```dart
 final handler = ThanPkgAndroid.getInstance.appSettingHandler;
 
@@ -326,12 +381,14 @@ handler.openWifiSettings()
 ```
 
 ### Flutter Utils
+
 ```dart
 final handler = ThanPkgAndroid.getInstance.flutterUtils;
 handler.toggleFullscreen(isFullscreen);
 ```
 
 ### SafeStorage Handler
+
 ```dart
 final handler = ThanPkgAndroid.getInstance.safeStorage;
 
@@ -343,8 +400,8 @@ handler.listFiles(treeUri);
 handler.writeFileData(parentUri: parentUri, fileName: fileName, bytes: bytes);
 ```
 
-
 ### Pdf Handler
+
 ```dart
 final handler = ThanPkgAndroid.getInstance.pdfHandler;
 
@@ -408,7 +465,7 @@ ThanPkgAndroid.getInstance.batteryManager.getBatteryInfo();
 
 ### Uri Handler Example
 
-- -> `FileSelector`,`MediaSelector`
+* -> `FileSelector`, `MediaSelector`
 
 ### I Will Work-> `[content://]` Kotlin Return URI
 
@@ -448,6 +505,7 @@ handler.getPicturesPath();
 ### You Need To Add Your Permission
 
 ```xml
+<uses-permission android:name="android.permission.INTERNET"/>
 <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -455,9 +513,12 @@ handler.getPicturesPath();
 <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
 <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<uses-permission android:name="android.permission.CAMERA" />
 ```
 
-## Extra XML Props
+## Extra XML Props. You Don't Need To Add!.
+
+### Plugin Auto Add.
 
 ```xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
@@ -477,10 +538,9 @@ handler.getPicturesPath();
         </intent>
         <intent>
             <action android:name="android.intent.action.VIEW" />
-            <data android:mimeType="*/*" />
+            <data android:mimeType=" */* " />
         </intent>
     </queries>
-
 
     <application>
         <provider

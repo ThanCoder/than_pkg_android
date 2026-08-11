@@ -11,6 +11,7 @@ import 'package:than_pkg_android/core/handlers/camera_handler.dart';
 import 'package:than_pkg_android/core/handlers/intent_transfer_handler.dart';
 import 'package:than_pkg_android/core/handlers/launch_handler.dart';
 import 'package:than_pkg_android/core/handlers/privacy_handler.dart';
+import 'package:than_pkg_android/core/info/info_handler.dart';
 import 'package:than_pkg_android/core/texture/texture_handler.dart';
 import 'package:than_pkg_android/core/managers/battery_manager.dart';
 import 'package:than_pkg_android/core/managers/network_manager.dart';
@@ -28,6 +29,7 @@ import 'package:than_pkg_android/core/handlers/wifi_handler.dart';
 import 'package:than_pkg_android/core/managers/native_download_manager.dart';
 
 export 'core/selectors/media/media_file.dart';
+export 'core/info/index.dart';
 
 class ThanPkgAndroid {
   static ThanPkgAndroid? _instance;
@@ -64,6 +66,7 @@ class ThanPkgAndroid {
   late final batteryManager = BatteryManager(_channel);
   late final networkManager = NetworkManager(_channel);
   late final textureHandler = TextureHandler(_channel);
+  late final infoHandler = InfoHandler(_channel);
 
   final flutterUtils = FlutterUtils();
 }

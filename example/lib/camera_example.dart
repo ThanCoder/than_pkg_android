@@ -12,6 +12,6 @@ void main() async {
 
   //My Phone Not Working!.
   if (await handler.hasFlashlight()) {
-    await handler.toggleTorch();
+    await handler.toggleTorch(enable: true);
   }
 }

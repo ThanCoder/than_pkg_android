@@ -65,7 +65,10 @@ class ThanPkgAndroidPlugin :
         val textureRegistry = binding.textureRegistry
 
         val newHandler = when (key) {
+            "AudioHandler" -> AudioHandler()
+            "AudioFileInfoHandler"-> AudioFileInfoHandler()
             "fileSelector" -> FileSelectorHandler()
+            "infoHandler" -> InfoHandler()
             "osHandler" -> OsHandler()
             "wifiHandler" -> WifiHandler()
             "fileHandler" -> AndroidFileHandler()
