@@ -12,199 +12,665 @@ import kotlin.concurrent.thread
 
 class SafeStorageHandler : PkgHandler() {
 
-    override fun handle(method: String, call: MethodCall, result: MethodChannel.Result) {
-        val act = activity ?: run {
-            result.error("NO_ACTIVITY", "Activity is not available", null)
+    companion object {
+        private const val REQUEST_FOLDER_PERMISSION = 2002
+    }
+
+    override fun handle(
+        method: String,
+        call: MethodCall,
+        result: MethodChannel.Result
+    ) {
+        val ctx = context ?: run {
+            result.error(
+                "NO_CONTEXT",
+                "Android context is not available",
+                null
+            )
             return
         }
 
         when (method) {
-            // ၁။ User ဆီကနေ သတ်မှတ်ထားတဲ့ Folder ဝင်ရောက်ခွင့် Permission တောင်းခြင်း
+
             "requestFolderPermission" -> {
-                this.pendingResult = result
-                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
-                    // လုံခြုံရေးအရ Permission ကို အမြဲသိမ်းထားခွင့် ပေးခြင်း
-                    addFlags(
-                        Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
-                    )
-                }
-                act.startActivityForResult(intent, 2002)
+                requestFolderPermission(result)
             }
 
-            // ၂။ ခွင့်ပြုချက်ရထားတဲ့ Folder ထဲမှာ Folder အသစ်ဆောက်ခြင်း
             "createFolder" -> {
-                val treeUriStr = call.argument<String>("treeUri")
-                val folderName = call.argument<String>("folderName")
-
-                if (treeUriStr == null || folderName == null) {
-                    return result.error("INVALID_ARGS", "treeUri and folderName are required", null)
-                }
-
-                val treeUri = treeUriStr.toUri()
-                // Permission ကို ဆက်ထိန်းထားရန်
-                persistPermission(act, treeUri)
-
-                val rootFolder = DocumentFile.fromTreeUri(act, treeUri)
-                val newFolder = rootFolder?.createDirectory(folderName)
-
-                if (newFolder != null) {
-                    result.success(newFolder.uri.toString()) // ဆောက်ပြီးသား Folder ရဲ့ Uri ကို ပြန်ပေးမယ်
-                } else {
-                    result.error("CREATE_FAILED", "Could not create folder", null)
-                }
+                createFolder(ctx, call, result)
             }
 
-            // ၃။ ဖိုင် သို့မဟုတ် Folder တစ်ခုခုကို ဖျက်ခြင်း (Delete)
+            "checkFolderPermission" -> {
+                checkFolderPermission(ctx, call, result)
+            }
+
             "deleteItem" -> {
-                val targetUriStr = call.argument<String>("targetUri") ?: return result.error(
-                    "INVALID_ARGS", "targetUri is required", null
-                )
-
-                val targetUri = targetUriStr.toUri()
-                val fileDoc =
-                    DocumentFile.fromSingleUri(act, targetUri) ?: DocumentFile.fromTreeUri(
-                        act, targetUri
-                    )
-
-                if (fileDoc != null && fileDoc.exists()) {
-                    val deleted = fileDoc.delete()
-                    result.success(deleted)
-                } else {
-                    result.success(false)
-                }
+                deleteItem(ctx, call, result)
             }
-            // ... class ထဲက when (method) အောက်မှာ ထည့်ရန် ...
+
             "listFiles" -> {
-                val treeUriStr = call.argument<String>("treeUri") ?: return result.error(
-                    "INVALID_ARGS", "treeUri is required", null
-                )
-
-                thread {
-                    try {
-                        val treeUri = treeUriStr.toUri()
-                        val rootFolder = DocumentFile.fromTreeUri(context!!, treeUri)
-                        val fileList = mutableListOf<Map<String, Any>>()
-
-                        rootFolder?.listFiles()?.forEach { file ->
-                            val fileInfo = mapOf(
-                                "name" to (file.name ?: ""),
-                                "uri" to file.uri.toString(),
-                                "isDirectory" to file.isDirectory,
-                                "size" to file.length()
-                            )
-                            fileList.add(fileInfo)
-                        }
-                        result.success(fileList) // ဖိုင်စာရင်းကို List ပုံစံနဲ့ Flutter ဘက် ပြန်ပို့မယ်
-                    } catch (e: Exception) {
-                        result.error("LIST_FAILED", e.localizedMessage, null)
-                    }
-                }
+                listFiles(ctx, call, result)
             }
 
             "writeFileData" -> {
-                val parentUriStr = call.argument<String>("parentUri") // ရထားတဲ့ Folder Uri
-                val fileName = call.argument<String>("fileName")
-                val mimeType = call.argument<String>("mimeType") ?: "application/octet-stream"
-                val bytes = call.argument<ByteArray>("bytes")
-
-                if (parentUriStr == null || fileName == null || bytes == null) {
-                    return result.error(
-                        "INVALID_ARGS", "parentUri, fileName and bytes are required", null
-                    )
-                }
-
-                thread {
-                    try {
-                        val parentUri = parentUriStr.toUri()
-                        val parentFolder = DocumentFile.fromTreeUri(context!!, parentUri)
-
-                        // ဖိုင်အသစ်ဆောက်မယ် (ရှိပြီးသားဆိုရင် content က overwrite ဖြစ်အောင်)
-                        val newFile = parentFolder?.createFile(mimeType, fileName)
-
-                        if (newFile != null) {
-                            context!!.contentResolver.openOutputStream(newFile.uri)
-                                .use { outputStream ->
-                                    outputStream?.write(bytes)
-                                }
-                            result.success(newFile.uri.toString()) // ရေးပြီးသွားရင် အဲဒီဖိုင်ရဲ့ Uri အစစ်ကို ပြန်ပေးမယ်
-                        } else {
-                            result.error("WRITE_FAILED", "Could not create file inside URI", null)
-                        }
-                    } catch (e: Exception) {
-                        result.error("WRITE_FAILED", e.localizedMessage, null)
-                    }
-                }
-            }
-            // ... class ထဲက when (method) အောက်မှာ ထည့်ရန် ...
-            "checkFolderPermission" -> {
-                val treeUriStr = call.argument<String>("treeUri") ?: return result.error(
-                    "INVALID_ARGS", "treeUri is required", null
-                )
-
-                try {
-                    val treeUri = treeUriStr.toUri()
-                    var hasPermission = false
-
-                    // Android စနစ်ထဲမှာ လက်ရှိ App က ယူထားတဲ့ Persisted (အမြဲတမ်း) Permission တွေကို လိုက်စစ်တာ ဖြစ်ပါတယ်
-                    val persistedPermissions = context!!.contentResolver.persistedUriPermissions
-                    for (permission in persistedPermissions) {
-                        if (permission.uri == treeUri && permission.isWritePermission) {
-                            hasPermission = true
-                            break
-                        }
-                    }
-
-                    // တကယ်လို့ စာရင်းထဲမှာ ရှိနေရင်တောင် ဖိုင်စနစ်ထဲကနေ တကယ်သုံးလို့ရသေးလား ထပ်စစ်တယ်
-                    if (hasPermission) {
-                        val fileDoc = DocumentFile.fromTreeUri(context!!, treeUri)
-                        if (fileDoc != null && fileDoc.exists() && fileDoc.canWrite()) {
-                            result.success(true) // Permission ရှိနေဆဲ၊ တန်းသုံးလို့ရတယ်
-                            return
-                        }
-                    }
-
-                    result.success(false) // Permission မရှိတော့ဘူး (User က setting ထဲကနေ clear လုပ်လိုက်တာမျိုး)
-                } catch (e: Exception) {
-                    result.success(false)
-                }
+                writeFileData(ctx, call, result)
             }
 
-            else -> result.notImplemented()
+            else -> {
+                result.notImplemented()
+            }
         }
     }
 
-    // Activity Result ပြန်လာချိန် ဖမ်းယူခြင်း
-    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
-        if (requestCode == 2002) {
-            if (resultCode == Activity.RESULT_OK && data != null) {
-                val treeUri = data.data
-                if (treeUri != null) {
-                    // ဖုန်းပိတ်ပြီး ပြန်ဖွင့်ရင်တောင် Permission မပျောက်အောင် အမြဲတမ်းသိမ်းခိုင်းခြင်း
-                    activity?.contentResolver?.takePersistableUriPermission(
-                        treeUri,
-                        Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                    )
-                    pendingResult?.success(treeUri.toString()) // Flutter ဘက်ကို Uri string ပြန်ပို့မယ်
-                } else {
-                    pendingResult?.success(null)
-                }
-            } else {
-                pendingResult?.success(null)
-            }
-            pendingResult = null
-            return true
-        }
-        return false
-    }
+    // -------------------------------------------------------------------------
+    // Request folder permission
+    // -------------------------------------------------------------------------
 
-    // Permission သက်တမ်း ကုန်မသွားအောင် စစ်ဆေးပေးတဲ့ Helper
-    private fun persistPermission(context: Context, uri: Uri) {
+    private fun requestFolderPermission(
+        result: MethodChannel.Result
+    ) {
+        val act = activity ?: run {
+            result.error(
+                "NO_ACTIVITY",
+                "Activity is not available",
+                null
+            )
+            return
+        }
+
+        pendingResult = result
+
         try {
-            context.contentResolver.takePersistableUriPermission(
-                uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            val intent = Intent(
+                Intent.ACTION_OPEN_DOCUMENT_TREE
+            ).apply {
+                addFlags(
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION or
+                            Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION or
+                            Intent.FLAG_GRANT_PREFIX_URI_PERMISSION
+                )
+            }
+
+            act.startActivityForResult(
+                intent,
+                REQUEST_FOLDER_PERMISSION
             )
         } catch (e: Exception) {
-            // အရင်က ယူပြီးသားဆိုရင် e တက်နိုင်လို့ ignore လုပ်ထားလို့ရပါတယ်
+            pendingResult = null
+
+            result.error(
+                "FOLDER_PICKER_ERROR",
+                e.localizedMessage
+                    ?: "Failed to open folder picker",
+                null
+            )
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Create folder
+    // -------------------------------------------------------------------------
+
+    private fun createFolder(
+        ctx: Context,
+        call: MethodCall,
+        result: MethodChannel.Result
+    ) {
+        val treeUriStr =
+            call.argument<String>("treeUri")
+
+        val folderName =
+            call.argument<String>("folderName")
+
+        val relativePath =
+            call.argument<String>("relativePath")
+
+        if (treeUriStr == null) {
+            result.error(
+                "INVALID_ARGS",
+                "treeUri is required",
+                null
+            )
+            return
+        }
+
+        if (folderName == null) {
+            result.error(
+                "INVALID_ARGS",
+                "folderName is required",
+                null
+            )
+            return
+        }
+
+        thread {
+            try {
+                val treeUri = treeUriStr.toUri()
+
+                persistPermission(
+                    ctx,
+                    treeUri
+                )
+
+                val parentFolder =
+                    resolveFolder(
+                        ctx,
+                        treeUri,
+                        relativePath
+                    )
+
+                if (parentFolder == null) {
+                    result.error(
+                        "PARENT_NOT_FOUND",
+                        "Could not resolve parent folder",
+                        null
+                    )
+                    return@thread
+                }
+
+                val existing =
+                    parentFolder.findFile(folderName)
+
+                if (existing != null &&
+                    existing.isDirectory
+                ) {
+                    result.success(
+                        existing.uri.toString()
+                    )
+                    return@thread
+                }
+
+                val newFolder =
+                    parentFolder.createDirectory(
+                        folderName
+                    )
+
+                if (newFolder != null) {
+                    result.success(
+                        newFolder.uri.toString()
+                    )
+                } else {
+                    result.error(
+                        "CREATE_FAILED",
+                        "Could not create folder",
+                        null
+                    )
+                }
+
+            } catch (e: Exception) {
+                result.error(
+                    "CREATE_FAILED",
+                    e.localizedMessage
+                        ?: "Failed to create folder",
+                    null
+                )
+            }
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Check permission
+    // -------------------------------------------------------------------------
+
+    private fun checkFolderPermission(
+        ctx: Context,
+        call: MethodCall,
+        result: MethodChannel.Result
+    ) {
+        val treeUriStr =
+            call.argument<String>("treeUri")
+                ?: run {
+                    result.error(
+                        "INVALID_ARGS",
+                        "treeUri is required",
+                        null
+                    )
+                    return
+                }
+
+        try {
+            val treeUri = treeUriStr.toUri()
+
+            val hasPermission =
+                ctx.contentResolver
+                    .persistedUriPermissions
+                    .any {
+                        it.uri == treeUri &&
+                                it.isReadPermission &&
+                                it.isWritePermission
+                    }
+
+            if (!hasPermission) {
+                result.success(false)
+                return
+            }
+
+            val folder =
+                DocumentFile.fromTreeUri(
+                    ctx,
+                    treeUri
+                )
+
+            result.success(
+                folder != null &&
+                        folder.exists() &&
+                        folder.canRead() &&
+                        folder.canWrite()
+            )
+
+        } catch (_: Exception) {
+            result.success(false)
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Delete file / folder
+    // -------------------------------------------------------------------------
+
+    private fun deleteItem(
+        ctx: Context,
+        call: MethodCall,
+        result: MethodChannel.Result
+    ) {
+        val targetUriStr =
+            call.argument<String>("targetUri")
+
+        if (targetUriStr == null) {
+            result.error(
+                "INVALID_ARGS",
+                "targetUri is required",
+                null
+            )
+            return
+        }
+
+        thread {
+            try {
+                val uri = targetUriStr.toUri()
+
+                val document =
+                    DocumentFile.fromSingleUri(
+                        ctx,
+                        uri
+                    )
+
+                if (document == null) {
+                    result.success(false)
+                    return@thread
+                }
+
+                if (!document.exists()) {
+                    result.success(false)
+                    return@thread
+                }
+
+                result.success(
+                    document.delete()
+                )
+
+            } catch (e: Exception) {
+                result.error(
+                    "DELETE_FAILED",
+                    e.localizedMessage
+                        ?: "Failed to delete item",
+                    null
+                )
+            }
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // List files
+    // -------------------------------------------------------------------------
+
+    private fun listFiles(
+        ctx: Context,
+        call: MethodCall,
+        result: MethodChannel.Result
+    ) {
+        val treeUriStr =
+            call.argument<String>("treeUri")
+
+        val relativePath =
+            call.argument<String>("relativePath")
+
+        if (treeUriStr == null) {
+            result.error(
+                "INVALID_ARGS",
+                "treeUri is required",
+                null
+            )
+            return
+        }
+
+        thread {
+            try {
+                val treeUri =
+                    treeUriStr.toUri()
+
+                val folder =
+                    resolveFolder(
+                        ctx,
+                        treeUri,
+                        relativePath
+                    )
+
+                if (folder == null) {
+                    result.error(
+                        "FOLDER_NOT_FOUND",
+                        "Folder could not be resolved",
+                        null
+                    )
+                    return@thread
+                }
+
+                val fileList =
+                    folder.listFiles()
+                        .map {
+                            mapOf(
+                                "name" to (
+                                        it.name ?: ""
+                                        ),
+                                "uri" to
+                                        it.uri.toString(),
+                                "isDirectory" to
+                                        it.isDirectory,
+                                "isFile" to
+                                        it.isFile,
+                                "size" to
+                                        it.length(),
+                                "mimeType" to
+                                        it.type,
+                                "canRead" to
+                                        it.canRead(),
+                                "canWrite" to
+                                        it.canWrite(),
+                                "exists" to
+                                        it.exists()
+                            )
+                        }
+
+                result.success(fileList)
+
+            } catch (e: Exception) {
+                result.error(
+                    "LIST_FAILED",
+                    e.localizedMessage
+                        ?: "Failed to list files",
+                    null
+                )
+            }
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Write file
+    // -------------------------------------------------------------------------
+
+    private fun writeFileData(
+        ctx: Context,
+        call: MethodCall,
+        result: MethodChannel.Result
+    ) {
+        val parentUriStr =
+            call.argument<String>("parentUri")
+
+        val relativePath =
+            call.argument<String>("relativePath")
+
+        val fileName =
+            call.argument<String>("fileName")
+
+        val mimeType =
+            call.argument<String>("mimeType")
+                ?: "application/octet-stream"
+
+        val bytes =
+            call.argument<ByteArray>("bytes")
+
+        if (parentUriStr == null) {
+            result.error(
+                "INVALID_ARGS",
+                "parentUri is required",
+                null
+            )
+            return
+        }
+
+        if (fileName == null) {
+            result.error(
+                "INVALID_ARGS",
+                "fileName is required",
+                null
+            )
+            return
+        }
+
+        if (bytes == null) {
+            result.error(
+                "INVALID_ARGS",
+                "bytes is required",
+                null
+            )
+            return
+        }
+
+        thread {
+            try {
+                val parentUri =
+                    parentUriStr.toUri()
+
+                val parentFolder =
+                    resolveFolder(
+                        ctx,
+                        parentUri,
+                        relativePath
+                    )
+
+                if (parentFolder == null) {
+                    result.error(
+                        "PARENT_NOT_FOUND",
+                        "Parent folder could not be resolved",
+                        null
+                    )
+                    return@thread
+                }
+
+                if (!parentFolder.canWrite()) {
+                    result.error(
+                        "NO_WRITE_PERMISSION",
+                        "Folder is not writable",
+                        null
+                    )
+                    return@thread
+                }
+
+                // Remove an existing file with the same name.
+                val existing =
+                    parentFolder.findFile(fileName)
+
+                if (existing != null) {
+                    existing.delete()
+                }
+
+                val newFile =
+                    parentFolder.createFile(
+                        mimeType,
+                        fileName
+                    )
+
+                if (newFile == null) {
+                    result.error(
+                        "WRITE_FAILED",
+                        "Could not create file",
+                        null
+                    )
+                    return@thread
+                }
+
+                ctx.contentResolver
+                    .openOutputStream(
+                        newFile.uri
+                    )
+                    .use { output ->
+                        if (output == null) {
+                            throw IllegalStateException(
+                                "Could not open output stream"
+                            )
+                        }
+
+                        output.write(bytes)
+                        output.flush()
+                    }
+
+                result.success(
+                    newFile.uri.toString()
+                )
+
+            } catch (e: Exception) {
+                result.error(
+                    "WRITE_FAILED",
+                    e.localizedMessage
+                        ?: "Failed to write file",
+                    null
+                )
+            }
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Resolve child folder
+    // -------------------------------------------------------------------------
+
+    /**
+     * Resolves a folder relative to the selected tree URI.
+     *
+     * Example:
+     *
+     * treeUri
+     *   └── data
+     *       └── books
+     *           └── covers
+     *
+     * relativePath = "data/books/covers"
+     */
+    private fun resolveFolder(
+        ctx: Context,
+        treeUri: Uri,
+        relativePath: String?
+    ): DocumentFile? {
+
+        var current =
+            DocumentFile.fromTreeUri(
+                ctx,
+                treeUri
+            ) ?: return null
+
+        if (relativePath.isNullOrBlank()) {
+            return current
+        }
+
+        val parts =
+            relativePath
+                .replace("\\", "/")
+                .split("/")
+                .filter {
+                    it.isNotBlank() &&
+                            it != "." &&
+                            it != ".."
+                }
+
+        for (part in parts) {
+            val child =
+                current.findFile(part)
+                    ?: return null
+
+            if (!child.isDirectory) {
+                return null
+            }
+
+            current = child
+        }
+
+        return current
+    }
+
+    // -------------------------------------------------------------------------
+    // Activity result
+    // -------------------------------------------------------------------------
+
+    fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?
+    ): Boolean {
+
+        if (
+            requestCode !=
+            REQUEST_FOLDER_PERMISSION
+        ) {
+            return false
+        }
+
+        val result = pendingResult
+            ?: return true
+
+        if (
+            resultCode == Activity.RESULT_OK &&
+            data?.data != null
+        ) {
+            val treeUri =
+                data.data!!
+
+            try {
+                activity?.contentResolver
+                    ?.takePersistableUriPermission(
+                        treeUri,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                                Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                    )
+            } catch (e: Exception) {
+                result.error(
+                    "PERSIST_PERMISSION_FAILED",
+                    e.localizedMessage
+                        ?: "Could not persist folder permission",
+                    null
+                )
+
+                pendingResult = null
+                return true
+            }
+
+            result.success(
+                treeUri.toString()
+            )
+        } else {
+            result.success(null)
+        }
+
+        pendingResult = null
+
+        return true
+    }
+
+    // -------------------------------------------------------------------------
+    // Persist URI permission
+    // -------------------------------------------------------------------------
+
+    private fun persistPermission(
+        ctx: Context,
+        uri: Uri
+    ) {
+        try {
+            ctx.contentResolver
+                .takePersistableUriPermission(
+                    uri,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                )
+        } catch (_: Exception) {
+            // Permission may already be persisted.
         }
     }
 }

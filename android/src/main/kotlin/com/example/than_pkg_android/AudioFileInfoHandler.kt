@@ -2,6 +2,7 @@ package com.example.than_pkg_android
 
 import android.content.Context
 import android.media.MediaMetadataRetriever
+import android.os.Build
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import java.io.File
@@ -108,10 +109,14 @@ class AudioFileInfoHandler : PkgHandler() {
                 )
 
             val sampleRate =
-                getLongMetadata(
-                    retriever,
-                    MediaMetadataRetriever.METADATA_KEY_SAMPLERATE
-                )
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    getLongMetadata(
+                        retriever,
+                        MediaMetadataRetriever.METADATA_KEY_SAMPLERATE
+                    )
+                } else {
+                    null
+                }
 
             val info =
                 mutableMapOf<String, Any?>()

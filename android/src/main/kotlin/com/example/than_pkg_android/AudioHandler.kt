@@ -148,11 +148,7 @@ class AudioHandler : PkgHandler() {
                     audioManager.getStreamVolume(stream)
 
                 val muted =
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        audioManager.isStreamMute(stream)
-                    } else {
-                        false
-                    }
+                    audioManager.isStreamMute(stream)
 
                 info[streamName(stream)] =
                     mapOf(
@@ -184,10 +180,7 @@ class AudioHandler : PkgHandler() {
         result: MethodChannel.Result
     ) {
         try {
-            val stream =
-                getStreamType(
-                    call.argument<String>("stream")
-                )
+            val stream = call.argument<Int>("stream_type")
 
             if (stream == null) {
                 result.error(
@@ -227,10 +220,8 @@ class AudioHandler : PkgHandler() {
         result: MethodChannel.Result
     ) {
         try {
-            val stream =
-                getStreamType(
-                    call.argument<String>("stream")
-                )
+            val stream = call.argument<Int>("stream_type")
+
 
             val volume =
                 call.argument<Int>("volume")

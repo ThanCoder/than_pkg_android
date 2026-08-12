@@ -1,92 +1,30 @@
-# 0.3.0
+# 0.4.0
+* Added `AudioInfoHandler`
+* Added `AudioFileHandler`
+* Changed `AndroidPathHandler`
+* Changed `AndroidSafeStorage` -> `Dart Sources`,  `Kotlin Sources`
+* Some Changed `AndroidPathHandler`
 
-+ Fixed Kotlin -> `LaunchHandler`
+## 0.3.0
+
+* Fixed Kotlin -> `LaunchHandler`
 * Added `InfoHandler`  
-    - AndroidInfo → OS information
-`version`  `sdkInt`  `securityPatch`  `incremental`  `releaseOrCodename` 
+    - AndroidInfo → OS information `version`  `sdkInt`  `securityPatch`  `incremental`  `releaseOrCodename` 
 
-    - AppInfo → app information
+    - AppInfo → app information `packageName` `appName` `versionCode` `firstInstallTime` `lastUpdateTime` `sourceDir` `publicSourceDir` `dataDir` `nativeLibraryDir` `installer` 
+    - DeviceInfo → hardware/build information`manufacturer` `model` `brand` `device` `product` `hardware` `board` `bootloader` `display` `host` `buildId` `tags` `type` `user` `supportedAbis` `supported32BitAbis` `supported64BitAbis` 
 
-`packageName` 
-`appName` 
-`versionCode` 
-`firstInstallTime` 
-`lastUpdateTime` 
-`sourceDir` 
-`publicSourceDir` 
-`dataDir` 
-`nativeLibraryDir` 
-`installer` 
-    - DeviceInfo → hardware/build information
-`manufacturer` 
-`model` 
-`brand` 
-`device` 
-`product` 
-`hardware` 
-`board` 
-`bootloader` 
-`display` 
-`host` 
-`buildId` 
-`tags` 
-`type` 
-`user` 
-`supportedAbis` 
-`supported32BitAbis` 
-`supported64BitAbis` 
+    - DisplayInfo → screen information `width` `height` `density` `densityDpi` `scaledDensity` `xdpi` `ydpi` 
 
-    - DisplayInfo → screen information
-`width` 
-`height` 
-`density` 
-`densityDpi` 
-`scaledDensity` 
-`xdpi` 
-`ydpi` 
+    - LocaleInfo → language/region `language` `country` `locale` `displayLanguage` `displayCountry` 
 
-    - LocaleInfo → language/region
-`language` 
-`country` 
-`locale` 
-`displayLanguage` 
-`displayCountry` 
+    - BatteryInfo → battery `level` `isCharging` 
 
-    - BatteryInfo → battery
-`level` 
-`isCharging` 
+    - MemoryInfo → RAM `totalBytes` `availableBytes` `lowMemory` `thresholdBytes` 
 
-    - MemoryInfo → RAM
-    
+    - StorageInfo → storage `totalBytes` `availableBytes` `freeBytes` 
 
-`totalBytes` 
-`availableBytes` 
-`lowMemory` 
-`thresholdBytes` 
-
-    - StorageInfo → storage
-    
-
-`totalBytes` 
-`availableBytes` 
-`freeBytes` 
-
-    - FeatureInfo → hardware capabilities
-    
-
-`camera` 
-`cameraFront` 
-`bluetooth` 
-`bluetoothLe` 
-`nfc` 
-`gps` 
-`wifi` 
-`telephony` 
-`fingerprint` 
-`usbHost` 
-`usbAccessory` 
-`sensorAccelerometer` 
-`sensorGyroscope` 
+    - FeatureInfo → hardware capabilities `camera` `cameraFront` `bluetooth` `bluetoothLe` `nfc` `gps` `wifi` `telephony` `fingerprint` `usbHost` `usbAccessory` `sensorAccelerometer` `sensorGyroscope` 
 
 ## 0.2.1
 
