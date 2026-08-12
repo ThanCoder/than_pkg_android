@@ -2,6 +2,7 @@
 class AppInfo {
   final String packageName;
   final String appName;
+  final int versionName;
   final int versionCode;
   final int firstInstallTime;
   final int lastUpdateTime;
@@ -13,6 +14,7 @@ class AppInfo {
   const AppInfo({
     required this.packageName,
     required this.appName,
+    required this.versionName,
     required this.versionCode,
     required this.firstInstallTime,
     required this.lastUpdateTime,
@@ -27,6 +29,7 @@ class AppInfo {
     return AppInfo(
       packageName: map['packageName'] ?? '',
       appName: map['appName'] ?? '',
+      versionName: map['versionName'] ?? '',
       versionCode: map['versionCode'] ?? -1,
       firstInstallTime: map['firstInstallTime'] ?? -1,
       lastUpdateTime: map['lastUpdateTime'] ?? -1,
@@ -40,6 +43,6 @@ class AppInfo {
 
   @override
   String toString() {
-    return 'AppInfo(packageName: $packageName, appName: $appName, versionCode: $versionCode, firstInstallTime: $firstInstallTime, lastUpdateTime: $lastUpdateTime, sourceDir: $sourceDir, publicSourceDir: $publicSourceDir, dataDir: $dataDir, nativeLibraryDir: $nativeLibraryDir, installer: $installer)';
+    return 'AppInfo(packageName: $packageName, appName: $appName,versionName $versionName versionCode: $versionCode, firstInstallTime: $firstInstallTime, lastUpdateTime: $lastUpdateTime, sourceDir: $sourceDir, publicSourceDir: $publicSourceDir, dataDir: $dataDir, nativeLibraryDir: $nativeLibraryDir, installer: $installer)';
   }
 }
