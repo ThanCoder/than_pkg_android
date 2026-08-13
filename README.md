@@ -54,7 +54,10 @@ ThanPkgAndroid.getInstance.[whatever you want!]
 ### AndroidManifest.xml
 
 * [x]  ➕ Added [`All Permission`](#all-permission)
-* [x]  ➕ Added [`Extra XML Props`](#extra-xml-props)
+* [x]  ➕ Added [`Extra XML Props`](#extra-xml-props-you-dont-need-to-add) Plugin Will Auto Add.
+* [x]  ➕ Added [`Intent Filter Extra CopyPast!`](#intent-filter-extra-copypast)
+
+
 
 ### InfoHandler Example
 
@@ -503,8 +506,6 @@ handler.getPicturesPath();
 
 ### SafeStorage Full Example
 
-
-
 ```dart
 import 'dart:typed_data';
 
@@ -810,13 +811,21 @@ class _SafeStorageExampleState extends State<SafeStorageExample> {
 
 ## Extra XML Props. You Don't Need To Add!.
 
+`<queries>` 
+
+`<queries>` declares which other apps or capabilities your app wants to discover or query on the device.
+
+It does not make your app receive or handle those intents.
+
+For example, if your app wants to check whether there is an app installed that can open PDF files, you can declare:
+
 ### Plugin Will Auto Add.
 
 ```xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.than_pkg_android">
 
-<queries>
+    <queries>
         <!-- Web Links -->
         <intent>
             <action android:name="android.intent.action.VIEW" />
@@ -828,10 +837,13 @@ class _SafeStorageExampleState extends State<SafeStorageExample> {
             <category android:name="android.intent.category.BROWSABLE" />
             <data android:scheme="http" />
         </intent>
-        <intent>
-            <action android:name="android.intent.action.VIEW" />
-            <data android:mimeType=" */* " />
-        </intent>
+         <!-- MIME Type Query -->
+          <!--
+          <intent>
+              <action android:name="android.intent.action.VIEW" />
+              <data android:mimeType=" */* " />
+          </intent>
+          -->
     </queries>
 
     <application>
@@ -847,4 +859,33 @@ class _SafeStorageExampleState extends State<SafeStorageExample> {
     </application>
 
 </manifest>
+```
+
+## Intent Filter Extra CopyPast!.
+
+`<intent-filter>` 
+
+`<intent-filter> ` declares which intents your own app can receive and handle.
+
+For example, if your app wants to appear as an option when the user opens a PDF, audio, or video file:
+
+```xml
+<activity
+    android:name=".MainActivity"
+    android:exported="true"
+    android:launchMode="singleTop">
+
+    <!-- Open PDF / Audio / Video files -->
+    <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+
+        <data android:mimeType="application/pdf" />
+        <data android:mimeType="audio/*" />
+        <data android:mimeType="video/*" />
+    </intent-filter>
+
+</activity>
 ```

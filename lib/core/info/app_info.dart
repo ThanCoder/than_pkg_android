@@ -2,7 +2,7 @@
 class AppInfo {
   final String packageName;
   final String appName;
-  final int versionName;
+  final String versionName;
   final int versionCode;
   final int firstInstallTime;
   final int lastUpdateTime;

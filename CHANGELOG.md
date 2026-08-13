@@ -1,13 +1,13 @@
+# 0.6.1 
+* Fixed `InfoHandler` -> `versionName(int)` to `versionName(String)`
+* Added `BrightnessHandler` -> `restoreScreenBrightness`, `isScreenBrightnessOverridden`
 # 0.5.0 
-
 * Added `InfoHandler` -> `versionName`
-
-
 # 0.4.0
 * Added `AudioInfoHandler`
 * Added `AudioFileHandler`
 * Changed `AndroidPathHandler`
-* Changed `AndroidSafeStorage` -> `Dart Sources`,   `Kotlin Sources`
+* Changed `AndroidSafeStorage` -> `Dart Sources`,      `Kotlin Sources`
 * Some Changed `AndroidPathHandler`
 
 ## 0.3.0

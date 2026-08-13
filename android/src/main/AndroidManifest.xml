@@ -13,10 +13,13 @@
             <category android:name="android.intent.category.BROWSABLE" />
             <data android:scheme="http" />
         </intent>
-        <intent>
-            <action android:name="android.intent.action.VIEW" />
-            <data android:mimeType="*/*" />
-        </intent>
+         <!-- MIME Type Query -->
+          <!--
+          <intent>
+              <action android:name="android.intent.action.VIEW" />
+              <data android:mimeType=" */* " />
+          </intent>
+          -->
     </queries>
     <application>
         <provider

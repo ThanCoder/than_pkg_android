@@ -47,19 +47,20 @@ class _MyAppState extends State<MyApp> {
         print('ThanDev: Start');
         final per = ThanPkgAndroid.getInstance.permissionHandler;
         // check storage permission
-        // if (!await per.isStoragePermission()) {
-        //   await per.requestStoragePermission();
-        //   return;
-        // }
+        if (!await per.isStoragePermission()) {
+          await per.requestStoragePermission();
+          return;
+        }
 
         // if (!await per.isCameraPermission()) {
         //   await per.requestCameraPermission();
         // }
         final root = ThanPkgAndroid.getInstance.pathHandler
             .getDeviceStoragePath();
-        // final pkg = ThanPkgAndroid.getInstance.safeStorage;
-
-        // print('Dev: ${pkg.}');
+        final pkg = ThanPkgAndroid.getInstance.launchHandler;
+        // await pkg.launchUrl('https://pub.dev/');
+        await pkg.launchFile('$root/test.jpg');
+        // print('Dev: ${await pkg.getScreenBrightness()}');
 
         // await ThanPkgAndroid.getInstance.osHandler.showToast('saved');
         // print('Dev: $uri');
