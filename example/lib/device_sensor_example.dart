@@ -42,14 +42,13 @@ class _MyAppState extends State<MyApp> {
   StreamSubscription<dynamic>? _sub;
 
   void init() async {
-    _sub = ThanPkgAndroid.getInstance.deviceSensorHandler.accelerometerStream.listen(
-      (event) {
-        print('ThanDev: Stream -> $event');
-        data = event.toString();
-        if (!mounted) return;
-        setState(() {});
-      },
-    );
+    _sub = ThanPkgAndroid.getInstance.deviceSensorHandler.accelerometerStream
+        .listen((event) {
+          print('ThanDev: Stream -> $event');
+          data = event.toString();
+          if (!mounted) return;
+          setState(() {});
+        });
   }
 
   String data = '';

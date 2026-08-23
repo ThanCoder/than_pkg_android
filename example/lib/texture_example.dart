@@ -47,7 +47,6 @@ class _TextureExampleState extends State<TextureExample> {
           //   return;
           // }
           textureId ??= await handler.createTexture();
-          
 
           // test color texture
           testTextureColor(textureId!);

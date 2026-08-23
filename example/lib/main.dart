@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:than_pkg_android/core/managers/battery_manager.dart';
 import 'package:than_pkg_android/core/texture/native_texture.dart';
 import 'package:than_pkg_android/than_pkg_android.dart';
-import 'package:than_pkg_android_example/safe_storage_example.dart';
 
 void main() {
   runApp(
@@ -69,9 +68,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   void goExample() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => SafeStorageExample()),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => SafeStorageExample()),
+    // );
   }
 }
