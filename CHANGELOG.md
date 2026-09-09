@@ -1,4 +1,7 @@
-# 0.6.1 
+# 0.7.0 
++ Modified `MediaFile`,`MediaSelector`
+
+## 0.6.1 
 * Fixed `InfoHandler` -> `versionName(int)` to `versionName(String)`
 * Added `BrightnessHandler` -> `restoreScreenBrightness`, `isScreenBrightnessOverridden`
 # 0.5.0 

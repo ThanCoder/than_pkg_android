@@ -51,18 +51,10 @@ class _MyAppState extends State<MyApp> {
           return;
         }
 
-        // if (!await per.isCameraPermission()) {
-        //   await per.requestCameraPermission();
-        // }
-        final root = ThanPkgAndroid.getInstance.pathHandler
-            .getDeviceStoragePath();
-        final pkg = ThanPkgAndroid.getInstance.launchHandler;
-        // await pkg.launchUrl('https://pub.dev/');
-        await pkg.launchFile('$root/test.jpg');
-        // print('Dev: ${await pkg.getScreenBrightness()}');
-
-        // await ThanPkgAndroid.getInstance.osHandler.showToast('saved');
-        // print('Dev: $uri');
+        final pkg = ThanPkgAndroid.getInstance.mediaSelector;
+        final list = await pkg.fetchAudio();
+        if (list.isEmpty) return;
+        print(list.first);
       },
     );
   }

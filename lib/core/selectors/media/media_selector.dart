@@ -25,6 +25,7 @@ class MediaSelector {
         '$_key/$method',
       );
       if (result == null) return [];
+      // print(result.first);
       return result
           .map((e) => MediaFile.fromMap(e as Map<dynamic, dynamic>))
           .toList();
