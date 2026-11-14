@@ -8,56 +8,54 @@ ThanPkgAndroid.getInstance.[whatever you want!]
 
 ## New Handlers
 
-* [x] ➕ Added [`InfoHandler`](#infohandler-example) New
-* [x] ➕ Added [`SafeStorage`](#safestorage-full-example) New
+- [x] ➕ Added [`InfoHandler`](#infohandler-example) New
+- [x] ➕ Added [`SafeStorage`](#safestorage-full-example) New
 
 ## Selectors
 
-* [x] ➕ Added [`FileSelector`](#file-selector-example)
-* [x] ➕ Added [`MediaSelector`](#mediaselector)
+- [x] ➕ Added [`FileSelector`](#file-selector-example)
+- [x] ➕ Added [`MediaSelector`](#mediaselector)
 
 ## Managers
 
-* [x] ➕ Added [`BatteryManager`](#battery-manger-example)
-* [x] ➕ Added [`NativeDownloadManager`](#nativedownload-manager)
-* [x] ➕ Added [`NetworkManager`](#networkmanager)
+- [x] ➕ Added [`BatteryManager`](#battery-manger-example)
+- [x] ➕ Added [`NativeDownloadManager`](#nativedownload-manager)
+- [x] ➕ Added [`NetworkManager`](#networkmanager)
 
 ## Handlers
 
-* [x] ➕ Updated [`TextureHandler`](#texturehandler)
-[Example](https://github.com/ThanCoder/than_pkg_android/blob/main/example/lib/texture_example.dart)
+- [x] ➕ Updated [`TextureHandler`](#texturehandler)
+      [Example](https://github.com/ThanCoder/than_pkg_android/blob/main/example/lib/texture_example.dart)
 
-------
+---
 
-* [x] ➕ Added [`PathHandler`](#path-handler)
-* [x] ➕ Added [`PdfHandler`](#pdf-handler)
-* [x] ➕ Added [`SafeStorage`](#safestorage-handler)
-* [x] ➕ Added [`FlutterUtils`](#flutter-utils)
-* [x] ➕ Added [`AppSettingHandler`](#appsetting-handler)
-* [x] ➕ Added [`BrightnessHandler`](#brightness-handler)
-* [x] ➕ Added [`CameraHandler`](#camera-handler)
-* [x] ➕ Added [`DeviceSensorHandler`](#devicesensor-handler)
-* [x] ➕ Added [`IntentTransferHandler`](#intenttransfer-handler)
-* [x] ➕ Added [`LaunchHandler`](#launch-handler)
-* [x] ➕ Added [`OrientationHandler`](#orientationhandler)
-* [x] ➕ Added [`OsHandler`](#oshandler)
-* [x] ➕ Added [`PermissionHandler`](#permissionhandler)
-* [x] ➕ Added [`PrivacyHandler`](#privacyhandler)
-* [x] ➕ Added [`SimpleNotificationHandler`](#simplenotificationhandler)
-* [x] ➕ Added [`NotificationHandler`](#notificationhandler)
-* [x] ➕ Added [`SoundHandler`](#soundhandler)
-* [x] ➕ Added [`StoragePermissionHandler`](#storagepermissionhandler)
-* [x] ➕ Added [`UriHandler`](#uri-handler-example)
-* [x] ➕ Added [`VideoHandler`](#videohandler)
-* [x] ➕ Added [`WifiHandler`](#wifihandler)
+- [x] ➕ Added [`PathHandler`](#path-handler)
+- [x] ➕ Added [`PdfHandler`](#pdf-handler)
+- [x] ➕ Added [`SafeStorage`](#safestorage-handler)
+- [x] ➕ Added [`FlutterUtils`](#flutter-utils)
+- [x] ➕ Added [`AppSettingHandler`](#appsetting-handler)
+- [x] ➕ Added [`BrightnessHandler`](#brightness-handler)
+- [x] ➕ Added [`CameraHandler`](#camera-handler)
+- [x] ➕ Added [`DeviceSensorHandler`](#devicesensor-handler)
+- [x] ➕ Added [`IntentTransferHandler`](#intenttransfer-handler)
+- [x] ➕ Added [`LaunchHandler`](#launch-handler)
+- [x] ➕ Added [`OrientationHandler`](#orientationhandler)
+- [x] ➕ Added [`OsHandler`](#oshandler)
+- [x] ➕ Added [`PermissionHandler`](#permissionhandler)
+- [x] ➕ Added [`PrivacyHandler`](#privacyhandler)
+- [x] ➕ Added [`SimpleNotificationHandler`](#simplenotificationhandler)
+- [x] ➕ Added [`NotificationHandler`](#notificationhandler)
+- [x] ➕ Added [`SoundHandler`](#soundhandler)
+- [x] ➕ Added [`StoragePermissionHandler`](#storagepermissionhandler)
+- [x] ➕ Added [`UriHandler`](#uri-handler-example)
+- [x] ➕ Added [`VideoHandler`](#videohandler)
+- [x] ➕ Added [`WifiHandler`](#wifihandler)
 
 ### AndroidManifest.xml
 
-* [x]  ➕ Added [`All Permission`](#all-permission)
-* [x]  ➕ Added [`Extra XML Props`](#extra-xml-props-you-dont-need-to-add) Plugin Will Auto Add.
-* [x]  ➕ Added [`Intent Filter Extra CopyPast!`](#intent-filter-extra-copypast)
-
-
+- [x] ➕ Added [`All Permission`](#all-permission)
+- [x] ➕ Added [`Extra XML Props`](#extra-xml-props-you-dont-need-to-add) Plugin Will Auto Add.
+- [x] ➕ Added [`Intent Filter Extra CopyPast!`](#intent-filter-extra-copypast)
 
 ### InfoHandler Example
 
@@ -79,7 +77,7 @@ await pkg.getStorageInfo();
 
 ```dart
 final handler = ThanPkgAndroid.getInstance.wifiHandler;
-          
+
 handler.getWifiDetails()
 ```
 
@@ -87,7 +85,7 @@ handler.getWifiDetails()
 
 ```dart
 final handler = ThanPkgAndroid.getInstance.videoHandler;
-          
+
 handler.getDuration(path)
 handler.getThumbnail(path)
 handler.saveThumbnail(path, savePath)
@@ -99,14 +97,14 @@ handler.saveThumbnail(path, savePath)
 
 ```dart
 final handler = ThanPkgAndroid.getInstance.textureHandler;
-          
+
 handler.createTexture()
 handler.getSurfacePointer(textureId, width: width, height: height)
 handler.releaseTexture(textureId)
 
-// ⚠️ DEV WARNING: This invokes raw C++ FFI bindings under the hood. 
-// Any mismatch between buffer dimensions and surface constraints will trigger 
-// a fatal native segmentation fault (SIGSEGV) or GPU driver crash. 
+// ⚠️ DEV WARNING: This invokes raw C++ FFI bindings under the hood.
+// Any mismatch between buffer dimensions and surface constraints will trigger
+// a fatal native segmentation fault (SIGSEGV) or GPU driver crash.
 // IF YOU DO NOT UNDERSTAND THE UNDERLYING MEMORY LIFECYCLE, DO NOT DO IT.
 NativeTextureManager.instance.androidUpdateTexture(
       surfacePointer,
@@ -124,7 +122,7 @@ testTextureColor(textureId!);
 
 ```dart
 final handler = ThanPkgAndroid.getInstance.storagePermissionHandler;
-          
+
 handler.isStoragePermissionGranted()
 handler.requestStoragePermission()
 ```
@@ -138,15 +136,11 @@ handler.getVolume()
 handler.setVolume(volume)
 ```
 
- 
-
 ### NotificationHandler
 
 ```xml
 <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 ```
-
-
 
 ```dart
 /// Check Runtime Permission
@@ -157,7 +151,7 @@ handler.setVolume(volume)
 }
 
 final handler = ThanPkgAndroid.getInstance.notificationHandler;
-          
+
 handler.show(id, title: title, content: content)
 handler.updateProgress(id, progress)
 handler.finish(id, title: title, content: content)
@@ -165,15 +159,11 @@ handler.cancel(id)
 handler.getChannelId()
 ```
 
- 
-
 ### SimpleNotificationHandler
 
 ```xml
 <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 ```
-
-
 
 ```dart
 /// Check Runtime Permission
@@ -183,7 +173,7 @@ handler.getChannelId()
       .requestNotificationPermission();
 }
 final handler = ThanPkgAndroid.getInstance.simpleNotificationHandler;
-          
+
 handler.showInfo(title, content)
 handler.showProgress(title, content)
 handler.updateProgress(progress, speed)
@@ -196,7 +186,7 @@ handler.getChannelId()
 
 ```dart
 final handler = ThanPkgAndroid.getInstance.privacyHandler;
-          
+
 handler.disableSecure()
 handler.enableSecure()
 ```
@@ -205,7 +195,7 @@ handler.enableSecure()
 
 ```dart
 final handler = ThanPkgAndroid.getInstance.permissionHandler;
-          
+
 // **************Check************** /
 handler.isAudioRecordPermission()
 handler.isBatteryOptimizationIgnored()
@@ -310,8 +300,6 @@ handler.openExternalBrowser(url)
 
 </activity>
 ```
-
-
 
 ```dart
 final handler = ThanPkgAndroid.getInstance.intentTransferHandler;
@@ -469,7 +457,7 @@ ThanPkgAndroid.getInstance.batteryManager.getBatteryInfo();
 
 ### Uri Handler Example
 
-* -> `FileSelector`, `MediaSelector`
+- -> `FileSelector`, `MediaSelector`
 
 ### I Will Work-> `[content://]` Kotlin Return URI
 
@@ -811,7 +799,7 @@ class _SafeStorageExampleState extends State<SafeStorageExample> {
 
 ## Extra XML Props. You Don't Need To Add!.
 
-`<queries>` 
+`<queries>`
 
 `<queries>` declares which other apps or capabilities your app wants to discover or query on the device.
 
@@ -863,7 +851,7 @@ For example, if your app wants to check whether there is an app installed that c
 
 ## Intent Filter Extra CopyPast!.
 
-`<intent-filter>` 
+`<intent-filter>`
 
 `<intent-filter> ` declares which intents your own app can receive and handle.
 
