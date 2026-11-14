@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:than_pkg_android/than_pkg_android.dart';
 
 class SafeStorageExample extends StatefulWidget {
