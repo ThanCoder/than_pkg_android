@@ -1,5 +1,5 @@
 name: than_pkg_android
-description: "Flutter Android Plugin.for all utils.PathHandler,PdfHandler,SafeStorage,FlutterUtils,AppSettingHandler,BrightnessHandler,CameraHandler,DeviceSensorHandler,IntentTransferHandler"
+description: "Flutter Android Plugin.for all utils.PathHandler,PdfHandler,SafeStorage,FlutterUtils,AppSettingHandler,BrightnessHandler,CameraHandler."
 
 homepage: https://pub.dev/packages/than_pkg_android
 repository: https://github.com/ThanCoder/than_pkg_android.git
