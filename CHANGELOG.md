@@ -1,3 +1,8 @@
+# 0.9.0
+
+- Upgraded `gradle-9.5.0-all`
+- Upgraded `android/build.gradle.kts`
+
 # 0.8.0
 
 - Updated.

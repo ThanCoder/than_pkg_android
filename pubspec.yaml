@@ -4,7 +4,7 @@ description: "Flutter Android Plugin.for all utils.PathHandler,FlutterUtils"
 homepage: https://pub.dev/packages/than_pkg_android
 repository: https://github.com/ThanCoder/than_pkg_android.git
 
-version: 0.8.0
+version: 0.9.0
 
 environment:
   sdk: ^3.14.0
